@@ -1,0 +1,12 @@
+Your code does not contain an exit under the following conditions:
+
+  - if i % 3 == 0 is true
+    lines 2-4
+  - if i % 3 == 0 is false and i % 3 == 1 is false
+    lines 15-21
+  - if i is 0
+    lines 28-29
+  - if i is 2
+    lines 32-34
+  - if i falls through to default
+    lines 35-36
