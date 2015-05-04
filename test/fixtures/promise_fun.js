@@ -16,7 +16,7 @@ function request(url) {
 
 // Promise Magic
 // Change any URL to a non-existant one to get the `err` to fire.
-request('http://googhle.com').then(function(data) {
+request('http://google.com').then(function(data) {
     [data, request('http://google.com')]
 }).spread(function(data1, data2) {
     [data1, data2, request('http://google.com')]
