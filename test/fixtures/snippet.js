@@ -14,10 +14,14 @@ for (var i = 0; i < 3; i++) {
    }
    else{
       /* 
+
       exit();
+
       */
    }
 }
+
+
 
 for (var i = 0; i < 5; i++) {
    switch(i){
@@ -31,11 +35,4 @@ for (var i = 0; i < 5; i++) {
       default:
          break;
    }
-}
-
-if (a) {
-   exit(value);
-}
-else {
-   
 }

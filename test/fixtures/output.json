@@ -94,5 +94,7 @@
          }
       }
    ],
-   "global_exits": []
+   "global_exits": [],
+   "promises": [],
+   "callbacks": []
 }

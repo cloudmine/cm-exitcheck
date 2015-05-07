@@ -15,9 +15,6 @@ function parse(code_to_parse){
    })
 }
 
-// utils testing
-// skips get_original_node, which is a one-liner
-// skips init_syntax, which is copied from the 'istanbul' module
 var utils = require('../lib/utils.js');
 describe('utils.is_exit', function(){
    var exit_code = "exit();"
@@ -44,7 +41,7 @@ describe('utils.is_exit', function(){
    })
 });
 
-describe('utils.nodes_equivalent', function(){
+describe('utils.nodes_equal', function(){
    var range1 = [1,2];
    var range2 = [1,3];
    var range3 = [0,2];
@@ -60,17 +57,17 @@ describe('utils.nodes_equivalent', function(){
    }
 
    it('should return true for two nodes with the same range', function(){
-      var equivalent = utils.nodes_equivalent(node1, node1);
+      var equivalent = utils.nodes_equal(node1, node1);
       expect(equivalent).to.be.true;
    });
 
    it('should return false for two nodes that end at different places', function(){
-      var equivalent = utils.nodes_equivalent(node1, node2);
+      var equivalent = utils.nodes_equal(node1, node2);
       expect(equivalent).to.be.false;
    });
 
    it('should return false for two nodes that begin at different places', function(){
-      var equivalent = utils.nodes_equivalent(node1, node3);
+      var equivalent = utils.nodes_equal(node1, node3);
       expect(equivalent).to.be.false;
    })
 });
@@ -99,7 +96,7 @@ describe('walker.walk', function(){
       walked.should.deep.equal([]);
    });
 
-   it('should return objects with an \'exits\' property of exiting nodes', function(){
+   it('should return objects with an `exits` property of exiting nodes', function(){
       var walked = walker.walk(if_node, if_code, syntax, [])[0];
       walked.should.have.property('exits').with.length(1);
       walked.exits.should.include(if_node.body[0].consequent)
@@ -109,7 +106,7 @@ describe('walker.walk', function(){
       walked.exits.should.include(switch_node.body[0].cases[2]);
    });
 
-   it('should return objects with a \'non_exits\' property of non_exiting nodes', function(){
+   it('should return objects with a `non_exits` property of not exiting nodes', function(){
       var walked = walker.walk(if_node, if_code, syntax, [])[0];
       walked.should.have.property('non_exits').with.length(1);
       walked.non_exits[0].should.deep.equal(if_node.body[0].alternate);
@@ -121,7 +118,16 @@ describe('walker.walk', function(){
    });
 });
 
-// primary testing
+var callback = require('../lib/callback.js');
+describe('callback.test', function(){
+   
+});
+
+var promise = require('../lib/promise.js');
+describe('promise.test', function(){
+
+});
+
 var main = require('../lib/index.js');
 describe('test_string', function(){
    var boring_code = fs.readFileSync(dir + 'boring.js', 'utf-8');
@@ -155,7 +161,7 @@ describe('test_string', function(){
       walker.walk.restore();
    });
 
-   it.skip('should respect the json option', function(){
+   it('should respect the json option', function(){
       var parsed = main.test_string(code, {
          'json': true,
       });
@@ -176,20 +182,6 @@ describe('test_string', function(){
       });
       parsed.should.equal(string_output)
    });
-
-   it('should respect the bool option', function(){
-      var parsed = main.test_string(code, {
-         'bool': true,
-      });
-      parsed.should.be.a('boolean');
-      parsed.should.be.false;
-
-      parsed = main.test_string(exiting_code, {
-         'bool': true,
-      });
-      parsed.should.be.a('boolean');
-      parsed.should.be.true;
-   });
 });
 
 describe('test_file', function(){
@@ -201,7 +193,7 @@ describe('test_file', function(){
       }).to.throw('No file name supplied.');
    });
 
-   it.skip('should respect the json option', function(){
+   it('should respect the json option', function(){
       var parsed = main.test_file(dir + 'wrapped_function.js', {
          'json': false
       });
@@ -219,12 +211,5 @@ describe('test_file', function(){
       parsed.should.have.property('global_exits');
       parsed.should.deep.equal(json_output);
    });
-
-   it('should respect the bool option', function(){
-      var parsed = main.test_file(dir + 'fully_exiting_snippet.js', {
-         'bool': true,
-      });
-      parsed.should.be.a('boolean');
-      parsed.should.be.true;
-   });
 });
+
