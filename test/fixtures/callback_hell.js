@@ -14,15 +14,13 @@ function request(url, cb) {
 // Change any URL to a non-existant one to get the `err` to fire.
 request('http://google.com', function(err, data1) {
     if (err) {
-        return exit(err);
+        // return exit(err);
     }
     request('http://google.com', function(err, data2) {
         if (err)
             return exit(err);
 
         request('http://google.com', function(err, data3) {
-            // Note, the lack of return here - execution will continue
-            // Can you also catch "double" exits?
             if (err)
                 exit(err);
 

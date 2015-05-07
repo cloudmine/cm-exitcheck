@@ -2,17 +2,17 @@
 var chai = require('chai');
 var should = chai.should();
 var expect = chai.expect;
-var assert = chai.assert;
 var sinon = require('sinon');
 var fs = require('fs');
 var dir = './test/fixtures/'
 var esprima = require('esprima');
 
 function parse(code_to_parse){
+   // so I don't have to specific the esprima params every time
    return esprima.parse(code_to_parse, {
       'range': true,
       'loc': true,
-   })
+   });
 }
 
 var utils = require('../lib/utils.js');
@@ -39,6 +39,29 @@ describe('utils.is_exit', function(){
    it('should return false for non function calls', function(){
       expect(utils.is_exit(not_fcn_node)).to.be.false;
    })
+});
+
+describe('utils.has_exit', function(){
+   var exit = "function a(){exit();}";
+   var exit_node = parse(exit).body[0];
+   var wrapped = "function b() { not_exit() }"
+   var wrapped_node = parse(wrapped).body[0];
+
+   it('should return a boolean', function(){
+      utils.has_exit().should.be.a('boolean');
+      utils.has_exit(exit_node).should.be.a('boolean');
+      utils.has_exit(wrapped_node).should.be.a('boolean');
+   });
+
+   it('should return true for code that contains an exit', function(){
+      utils.has_exit(exit_node).should.be.true;
+      utils.has_exit(wrapped_node, ['not_exit']).should.be.true;
+   });
+
+   it('should return false for code that does not contain an exit', function(){
+      utils.has_exit(wrapped_node).should.be.false;
+      utils.has_exit(wrapped_node, ['something']).should.be.false;
+   });
 });
 
 describe('utils.nodes_equal', function(){
@@ -73,15 +96,76 @@ describe('utils.nodes_equal', function(){
 });
 
 describe('utils.sort', function(){
+   var if_code = fs.readFileSync(dir + 'if_snippet.js', 'utf-8');
+   var if_node = parse(if_code).body[0];
+   var switch_code = fs.readFileSync(dir + 'switch_snippet.js', 'utf-8');
+   var switch_node = parse(switch_code).body[0];
 
+   it('should put all exiting children in the `exits` property', function(){
+      var result = utils.sort(if_node, [], if_code);
+      result.should.have.property('exits').with.length(1);
+      result.exits.should.deep.include(if_node.consequent);
+
+      result = utils.sort(switch_node, [], switch_code);
+      result.should.have.property('exits').with.length(1);
+      result.exits.should.deep.include(switch_node.cases[2]);
+   });
+
+   it('should put all not-exiting children in the `non_exits` property', function(){
+      var result = utils.sort(if_node, [], if_code);
+      result.should.have.property('non_exits').with.length(1);
+      result.non_exits.should.deep.include(if_node.alternate);
+
+      result = utils.sort(switch_node, [], switch_code);
+      result.should.have.property('non_exits').with.length(2);
+      result.non_exits.should.deep.include(switch_node.cases[0]);
+      result.non_exits.should.deep.include(switch_node.cases[1]);
+   });
 });
 
 describe('utils.check_functions', function(){
+   var code = fs.readFileSync(dir + 'wrapped_function.js', 'utf-8');
+   var node = parse(code);
 
+   it('should return an array', function(){
+      utils.check_functions().should.be.an('array');
+      utils.check_functions(node).should.be.an('array');
+      utils.check_functions(node, ['something']).should.be.an('array')
+   });
+
+   it('should return those functions that always exit', function(){
+      var result = utils.check_functions(node);
+      result.should.have.length(1);
+      result.should.include('my_function');
+   });
+});
+
+describe('utils.variables_equivalent', function(){
+   var node1 = {
+      'name': 'node1',
+      'type': 'Node'
+   }
+   var node2 = {
+      'name': 'node2',
+      'type': 'Node'
+   }
+   var node3 = {
+      'name': 'node1',
+      'type': 'NotANode'
+   }
+
+   it('should return true for two equivalent variable nodes', function(){
+      utils.variables_equivalent(node1, node1).should.be.true;
+   });
+
+   it('should return false for two nodes with different types or names', function(){
+      utils.variables_equivalent(node1, node2).should.be.false;
+      utils.variables_equivalent(node1, node3).should.be.false;
+      utils.variables_equivalent(node2, node3).should.be.false;
+   });
 });
 
 var walker = require('../lib/walker.js');
-
 describe('walker.walk', function(){
    var boring_code = fs.readFileSync(dir + 'boring.js', 'utf-8');
    var boring_node = parse(boring_code);
@@ -120,12 +204,86 @@ describe('walker.walk', function(){
 
 var callback = require('../lib/callback.js');
 describe('callback.test', function(){
-   
+   var callback_code = fs.readFileSync(dir + 'callback_hell.js', 'utf-8');
+   var callback_node = parse(callback_code).body[3];
+
+   it('should return an array with each callback function', function(){
+      callback.test(callback_node).should.be.an('array').with.length(4);
+   });
+
+   it('should indicate whether each callback exits', function(){
+      var result = callback.test(callback_node);
+      result[0].should.have.property('exits');
+      result[0].exits.should.be.false;
+      result[1].should.have.property('exits');
+      result[1].exits.should.be.false;
+      result[2].should.have.property('exits');
+      result[2].exits.should.be.false;
+      result[3].should.have.property('exits');
+      result[3].exits.should.be.true;
+   });
+
+   it('should indicate if each callback had error handling', function(){
+      var result = callback.test(callback_node);
+      result[0].should.have.property('err');
+      result[1].should.have.property('err');
+      result[2].should.have.property('err');
+      result[3].should.not.have.property('err');
+   });
+
+   it('should indicate if each callback error handling exited', function(){
+      var result = callback.test(callback_node);
+      result[0].should.have.property('err_exits');
+      result[0].err_exits.should.be.false;
+      result[1].should.have.property('err_exits');
+      result[1].err_exits.should.be.true;
+      result[2].should.have.property('err_exits');
+      result[2].err_exits.should.be.true;
+      result[3].should.not.have.property('err_exits');
+   });
 });
 
 var promise = require('../lib/promise.js');
 describe('promise.test', function(){
+   var promise_code = fs.readFileSync(dir + 'promise_fun.js', 'utf-8');
+   var promise_node = parse(promise_code);
 
+   it('should return an array given a good esprima node', function(){
+      promise.test(promise_node).should.be.an('array');
+   });
+
+   describe('each object in the array', function(){
+      it('should have the correct properties', function(){
+         var result = promise.test(promise_node);
+         result.should.have.length(1);
+         result[0].should.have.property('all_funcs').with.length(6);
+         result[0].should.have.property('last_caught_index')
+         result[0].should.have.property('last_caught_exit_index');
+         result[0].should.have.property('last_run_index');
+         result[0].should.have.property('last_run_exit_index');
+         result[0].should.have.property('promise');
+      });
+      
+      it('should indicate whether fully successful code exit', function(){
+         var result = promise.test(promise_node);
+
+         result[0].should.have.property('last_run_index');
+         result[0].last_run_index.should.equal(5);
+
+         result[0].should.have.property('last_run_exit_index');
+         result[0].last_run_exit_index.should.equal(5);
+      });
+
+      it('should indicate whether erroring code exits', function(){
+         var result = promise.test(promise_node);
+
+         result[0].should.have.property('last_caught_index')
+         result[0].last_caught_index.should.equal(4);
+
+         result[0].should.have.property('last_caught_exit_index');
+         result[0].last_caught_exit_index.should.equal(0);
+      });
+   })
 });
 
 var main = require('../lib/index.js');
@@ -159,6 +317,21 @@ describe('test_string', function(){
       main.test_string(boring_code);
       walker.walk.callCount.should.equal(boring_nodes.body.length);
       walker.walk.restore();
+   });
+
+   it('should check promises', function(){
+      sinon.spy(promise, 'test');
+      main.test_string(boring_code);
+      promise.test.calledOnce.should.be.true;
+      promise.test.calledWith(boring_nodes).should.be.true;
+      promise.test.restore();
+   });
+
+   it('should check callbacks', function(){
+      sinon.spy(callback, 'test');
+      main.test_string(boring_code);
+      callback.test.callCount.should.equal(boring_nodes.body.length);
+      callback.test.restore();
    });
 
    it('should respect the json option', function(){
