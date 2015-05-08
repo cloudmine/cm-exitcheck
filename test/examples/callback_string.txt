@@ -1,0 +1,3 @@
+For callback chain beginning on line 15:
+  - Errors caught by 1st callback (lines 16-18) do not exit.
+  - Successful callbacks exit

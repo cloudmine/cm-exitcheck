@@ -17,11 +17,11 @@ request('http://google.com', function(err, data1) {
         // return exit(err);
     }
     request('http://google.com', function(err, data2) {
-        if (err)
+        if (err != undefined)
             return exit(err);
 
         request('http://google.com', function(err, data3) {
-            if (err)
+            if (undefined !== err)
                 exit(err);
 
             request('http://google.com', function(err, data4) {

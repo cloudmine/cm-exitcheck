@@ -18,12 +18,25 @@ function request(url) {
 // Change any URL to a non-existant one to get the `err` to fire.
 request('http://google.com').then(function(data) {
     [data, request('http://google.com')]
-}).spread(function(data1, data2) {
+}).then(function(data1, data2) {
     [data1, data2, request('http://google.com')]
 }).spread(function(data1, data2, data3) {
     exit([data1, data2, data3]);
 }).catch(function(err) {
-    //exit(err)
+    // exit(err)
 }).finally(function() {
     exit();
 });
+
+request('http://google.com').then(function(data) {
+    [data, request('http://google.com')]
+}).then(function(data1, data2) {
+    exit(data1, data2);
+    [data1, data2, request('http://google.com')]
+}).catch(function(err) {
+    exit(err)
+}).done(function(data){
+    [data]
+}, function(err){
+    // error handling??
+})
