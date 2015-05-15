@@ -1,4 +1,4 @@
-if (a == b){
+if (a){
    exit();
 } else{
    console.log("sorry");

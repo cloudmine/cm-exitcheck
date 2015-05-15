@@ -96,34 +96,6 @@ describe('utils.nodes_equal', function(){
    })
 });
 
-describe('utils.sort', function(){
-   var if_code = fs.readFileSync(fix_dir + 'if_snippet.js', 'utf-8');
-   var if_node = parse(if_code).body[0];
-   var switch_code = fs.readFileSync(fix_dir + 'switch_snippet.js', 'utf-8');
-   var switch_node = parse(switch_code).body[0];
-
-   it('should put all exiting children in the `exits` property', function(){
-      var result = utils.sort(if_node, [], if_code);
-      result.should.have.property('exits').with.length(1);
-      result.exits.should.deep.include(if_node.consequent);
-
-      result = utils.sort(switch_node, [], switch_code);
-      result.should.have.property('exits').with.length(1);
-      result.exits.should.deep.include(switch_node.cases[2]);
-   });
-
-   it('should put all not-exiting children in the `non_exits` property', function(){
-      var result = utils.sort(if_node, [], if_code);
-      result.should.have.property('non_exits').with.length(1);
-      result.non_exits.should.deep.include(if_node.alternate);
-
-      result = utils.sort(switch_node, [], switch_code);
-      result.should.have.property('non_exits').with.length(2);
-      result.non_exits.should.deep.include(switch_node.cases[0]);
-      result.non_exits.should.deep.include(switch_node.cases[1]);
-   });
-});
-
 describe('utils.check_functions', function(){
    var code = fs.readFileSync(fix_dir + 'wrapped_function.js', 'utf-8');
    var node = parse(code);
@@ -166,82 +138,196 @@ describe('utils.variables_equivalent', function(){
    });
 });
 
+describe('utils.get_first_function', function(){
+   var code = "function a(){ return;} a().b().c();";
+   var node = parse(code);
+
+   it('should return the first function call', function(){
+      var first = utils.get_first_function(node.body[1].expression);
+      var actual = node.body[1].expression.callee.object.callee.object.callee;
+      first.should.deep.equal(actual);
+   });
+});
+
+describe('utils.get_all_functions', function(){
+   var code = "function a(){ return;} a().b().c();";
+   var node = parse(code);
+
+   it('should return an array of the function calls', function(){
+      var calls = utils.get_all_functions(node.body[1].expression);
+      var first = node.body[1].expression.callee.object.callee.object.callee;
+      var second = {
+         'property': node.body[1].expression.callee.object.callee.property,
+         'arguments': [],
+      };
+      var third = {
+         'property': node.body[1].expression.callee.property,
+         'arguments': [],
+      };
+
+      calls.should.be.an('array').with.length(3);
+      calls[0].should.deep.equal(first);
+      calls[1].should.deep.equal(second);
+      calls[2].should.deep.equal(third);
+   });
+});
+
+describe('utils.test_if', function(){
+   var if_code = fs.readFileSync(fix_dir + 'if_snippet.js', 'utf-8');
+   var if_node = parse(if_code);
+
+   it('should ignore unrelated ifs', function(){
+      var fake_err = {
+         'type': 'Identifier',
+         'name': 'err',
+      };
+      var tested = utils.test_if(if_node.body[0], fake_err, []);
+
+      tested.should.have.property('err_exits');
+      tested.err_exits.should.be.false;
+
+      tested.should.have.property('err_caught');
+      tested.err_caught.should.be.false;
+   });
+
+   it('should recognize err handling', function(){
+      var matching_err = {
+         'type': 'Identifier',
+         'name': 'a',
+      };
+      var tested = utils.test_if(if_node.body[0], matching_err, []);
+
+      tested.should.have.property('err_exits');
+      tested.err_exits.should.be.true;
+
+      tested.should.have.property('err_caught');
+      tested.err_caught.should.be.true;
+   })
+});
+
 var walker = require('../lib/walker.js');
 describe('walker.walk', function(){
    var boring_code = fs.readFileSync(fix_dir + 'boring.js', 'utf-8');
    var boring_node = parse(boring_code);
-   var if_code = fs.readFileSync(fix_dir + 'if_snippet.js', 'utf-8');
-   var if_node = parse(if_code);
-   var switch_code = fs.readFileSync(fix_dir + 'switch_snippet.js', 'utf-8');
-   var switch_node = parse(switch_code);
    var syntax = walker.syntax();
 
-   it('should return an empty array for nodes without relevant children', function(){
-      var walked = walker.walk(boring_node);
-      walked.should.deep.equal([]);
+   it('should call the parser param on each relevant child', function(){
+      var parser = function(a){
+         return a;
+      };
+
+      parser = sinon.spy(parser);
+      var walked = walker.walk(boring_node, parser, syntax);
+      parser.called.should.be.true;
+      parser.callCount.should.equal(walked.length);
+
+      for (var i = 0; i < walked.length; i++) {
+         parser.calledWith(walked[i]).should.be.true;
+      }
+   });
+});
+
+var conditional = require('../lib/conditional.js');
+describe('conditional.test', function(){
+   var if_code = fs.readFileSync(fix_dir + 'if_snippet.js', 'utf-8');
+   var if_node = parse(if_code).body[0];
+   var switch_code = fs.readFileSync(fix_dir + 'switch_snippet.js', 'utf-8');
+   var switch_node = parse(switch_code).body[0];
+
+   it('should put all exiting children in the `exits` property', function(){
+      var result = conditional.test(if_node, [], if_code);
+      result.should.have.property('exits').with.length(1);
+      result.exits.should.deep.include(if_node.consequent);
+
+      result = conditional.test(switch_node, [], switch_code);
+      result.should.have.property('exits').with.length(1);
+      result.exits.should.deep.include(switch_node.cases[2]);
    });
 
-   it('should return objects with an `exits` property of exiting nodes', function(){
-      var walked = walker.walk(if_node, if_code, syntax, [])[0];
-      walked.should.have.property('exits').with.length(1);
-      walked.exits.should.include(if_node.body[0].consequent)
+   it('should put all not-exiting children in the `non_exits` property', function(){
+      var result = conditional.test(if_node, [], if_code);
+      result.should.have.property('non_exits').with.length(1);
+      result.non_exits.should.deep.include(if_node.alternate);
 
-      walked = walker.walk(switch_node, switch_code, syntax, [])[0];
-      walked.should.have.property('exits').with.length(1);
-      walked.exits.should.include(switch_node.body[0].cases[2]);
-   });
-
-   it('should return objects with a `non_exits` property of not exiting nodes', function(){
-      var walked = walker.walk(if_node, if_code, syntax, [])[0];
-      walked.should.have.property('non_exits').with.length(1);
-      walked.non_exits[0].should.deep.equal(if_node.body[0].alternate);
-
-      walked = walker.walk(switch_node, switch_code, syntax, [])[0];
-      walked.should.have.property('non_exits').with.length(2);
-      walked.non_exits.should.include(switch_node.body[0].cases[0]);
-      walked.non_exits.should.include(switch_node.body[0].cases[1]);
+      result = conditional.test(switch_node, [], switch_code);
+      result.should.have.property('non_exits').with.length(2);
+      result.non_exits.should.deep.include(switch_node.cases[0]);
+      result.non_exits.should.deep.include(switch_node.cases[1]);
    });
 });
 
 var callback = require('../lib/callback.js');
+describe('callback.test_declaration', function(){
+   var callback_code = fs.readFileSync(ex_dir + 'callback_hell.js', 'utf-8');
+   var callback_node = parse(callback_code);
+
+   it('should return nothing for functions that don\'t use callbacks', function(){
+      var code = fs.readFileSync(fix_dir + 'wrapped_function.js', 'utf-8');
+      var node = parse(code).body[0];
+      var test = callback.test_declaration(node);
+      expect(test).to.be.undefined;
+   });
+
+   it('should populate the correct properties for callback functions', function(){
+      var node = callback_node.body[2];
+      var test = callback.test_declaration(node);
+
+      test.should.have.property('success_found');
+      test.success_found.should.be.true;
+
+      test.should.have.property('success_exits');
+      test.success_exits.should.be.false;
+
+      test.should.have.property('success_call_index');
+      test.success_call_index.should.equal(1);
+
+      test.should.have.property('error_found');
+      test.error_found.should.be.true;
+
+      test.should.have.property('error_exits');
+      test.error_exits.should.be.false;
+
+      test.should.have.property('error_call_index');
+      test.error_call_index.should.equal(1);
+
+      test.should.have.property('error_param');
+      test.error_param.should.have.property('index');
+      test.error_param.index.should.equal(1);
+      test.error_param.should.have.property('args_passed');
+      var args_passed = node.body.body[0].expression.arguments[1].body.body[0].expression.arguments;
+      test.error_param.args_passed.should.deep.equal(args_passed)
+   })
+});
+
 describe('callback.test', function(){
    var callback_code = fs.readFileSync(ex_dir + 'callback_hell.js', 'utf-8');
-   var callback_node = parse(callback_code).body[3];
+   var callback_node = parse(callback_code);
 
-   it('should return an array with each callback function', function(){
-      callback.test(callback_node).should.be.an('array').with.length(4);
+   it('should only return something if given an expression statement', function(){
+      var tested = callback.test(callback_node, []);
+      expect(tested).to.be.undefined;
    });
 
-   it('should indicate whether each callback exits', function(){
-      var result = callback.test(callback_node);
-      result[0].should.have.property('exits');
-      result[0].exits.should.be.false;
-      result[1].should.have.property('exits');
-      result[1].exits.should.be.false;
-      result[2].should.have.property('exits');
-      result[2].exits.should.be.false;
-      result[3].should.have.property('exits');
-      result[3].exits.should.be.true;
-   });
+   it('should correctly populate the result object', function(){
+      var node = callback_node.body[3];
+      var callbacks = [callback.test_declaration(callback_node.body[2])]
+      var tested = callback.test(node, callbacks);
 
-   it('should indicate if each callback had error handling', function(){
-      var result = callback.test(callback_node);
-      result[0].should.have.property('err');
-      result[1].should.have.property('err');
-      result[2].should.have.property('err');
-      result[3].should.not.have.property('err');
-   });
+      tested.should.have.property('success_found');
+      tested.success_found.should.be.true;
 
-   it('should indicate if each callback error handling exited', function(){
-      var result = callback.test(callback_node);
-      result[0].should.have.property('err_exits');
-      result[0].err_exits.should.be.false;
-      result[1].should.have.property('err_exits');
-      result[1].err_exits.should.be.true;
-      result[2].should.have.property('err_exits');
-      result[2].err_exits.should.be.true;
-      result[3].should.not.have.property('err_exits');
-   });
+      tested.should.have.property('success_exits');
+      tested.success_exits.should.be.true;
+
+      tested.should.have.property('error_found');
+      tested.error_found.should.be.true;
+
+      tested.should.have.property('error_exits');
+      tested.error_exits.should.be.false;
+
+      tested.should.have.property('node');
+      tested.node.should.deep.equal(node);
+   })
 });
 
 var promise = require('../lib/promise.js');
@@ -314,14 +400,17 @@ describe('test_string', function(){
    var exiting_code = fs.readFileSync(fix_dir + 'fully_exiting_snippet.js', 'utf-8');
    var exit_block = parse(exiting_code).body[3];
 
-   var code = fs.readFileSync(ex_dir + 'if_switch_code.js', 'utf-8');
-   var string_output = fs.readFileSync(ex_dir + 'if_switch_string.txt', 'utf-8');
-   var json_output = JSON.parse(fs.readFileSync(ex_dir + 'if_switch_output.json', 'utf-8'));
+   var if_code = fs.readFileSync(ex_dir + 'if_switch_code.js', 'utf-8');
+   var callback_code = fs.readFileSync(ex_dir + 'callback_hell.js', 'utf-8');
 
    it('should parse the string using esprima', function(){
       sinon.spy(esprima, 'parse');
       main.test_string(boring_code);
       esprima.parse.called.should.be.true;
+      esprima.parse.calledWith(boring_code, {
+         loc: true,
+         range: true,
+      }).should.be.true;
       esprima.parse.restore();
    });
 
@@ -332,37 +421,54 @@ describe('test_string', function(){
       utils.is_exit.restore();
    });
 
-   it('should walk each global node', function(){
-      sinon.spy(walker, 'walk');
-      main.test_string(boring_code);
-      walker.walk.callCount.should.equal(boring_nodes.body.length);
-      walker.walk.restore();
+   it('should check all function declarations for callbacks', function(){
+      sinon.spy(callback, 'test_declaration');
+      main.test_string(callback_code);
+      callback.test_declaration.callCount.should.equal(1);
+      callback.test_declaration.calledWith(parse(callback_code).body[2]).should.be.true;
+      callback.test_declaration.restore();
+   });
+
+   it('should check conditionals', function(){
+      sinon.spy(conditional, 'test');
+
+      main.test_string(if_code);
+      conditional.test.called.should.be.true;
+
+      conditional.test.restore();
    });
 
    it('should check promises', function(){
       sinon.spy(promise, 'test');
-      main.test_string(boring_code);
-      promise.test.calledOnce.should.be.true;
-      promise.test.calledWith(boring_nodes).should.be.true;
+
+      main.test_string(if_code)
+      promise.test.called.should.be.true;
       promise.test.restore();
    });
 
    it('should check callbacks', function(){
       sinon.spy(callback, 'test');
-      main.test_string(boring_code);
-      callback.test.callCount.should.equal(boring_nodes.body.length);
+      sinon.spy(callback, 'test_declaration');
+
+      main.test_string(callback_code);
+      callback.test_declaration.calledOnce.should.be.true;
+      callback.test.called.should.be.true;
+
       callback.test.restore();
+      callback.test_declaration.restore();
    });
 
    it('should respect the json option', function(){
-      var parsed = main.test_string(code, {
+      var parsed = main.test_string(if_code, {
          'json': true,
       });
       parsed.should.be.an('object');
-      parsed.should.have.property('exits');
-      parsed.should.have.property('non_exits');
       parsed.should.have.property('global_exits');
-      parsed.should.deep.equal(json_output);
+      parsed.should.have.property('conditionals');
+      parsed.should.have.property('promises');
+      parsed.should.have.property('callbacks');
+      var if_json = JSON.parse(fs.readFileSync(ex_dir + 'if_switch_output.json', 'utf-8'));
+      parsed.should.deep.equal(if_json);
 
       parsed = main.test_string(exiting_code, {
          'json': false,
@@ -370,10 +476,23 @@ describe('test_string', function(){
       parsed.should.be.a('string');
       parsed.should.equal('Hooray! Your code contains a global exit.')
 
-      parsed = main.test_string(code, {
+      parsed = main.test_string(if_code, {
          'json': false
       });
-      parsed.should.equal(string_output)
+      parsed.should.be.a('string');
+      var if_string = fs.readFileSync(ex_dir + 'if_switch_string.txt', 'utf-8');
+      parsed.should.equal(if_string)
+   });
+
+   it('should correctly format conditional output', function(){
+      sinon.spy(conditional, 'output');
+      var result = main.test_string(if_code);
+      conditional.output.calledOnce.should.be.true;
+      conditional.output.restore();
+
+      var output = fs.readFileSync(ex_dir + 'if_switch_string.txt', 'utf-8');
+      result.should.be.a('string');
+      result.should.equal(output);
    });
 
    it('should correctly format callback output', function(){
@@ -417,9 +536,8 @@ describe('test_file', function(){
       });
 
       parsed.should.be.an('object');
-      parsed.should.have.property('exits');
-      parsed.should.have.property('non_exits');
       parsed.should.have.property('global_exits');
+      parsed.should.have.property('conditionals');
       parsed.should.have.property('callbacks');
       parsed.should.have.property('promises');
       parsed.should.deep.equal(json_output);

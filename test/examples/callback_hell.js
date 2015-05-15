@@ -15,6 +15,8 @@ function request(url, cb) {
 request('http://google.com', function(err, data1) {
     if (err) {
         // return exit(err);
+    } else {
+        
     }
     request('http://google.com', function(err, data2) {
         if (err != undefined)

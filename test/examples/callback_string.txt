@@ -1,3 +1,4 @@
-For callback chain beginning on line 15:
-  - Errors caught by 1st callback (lines 16-18) do not exit.
-  - Successful callbacks exit
+For callback beginning on line 15:
+  - Successful runs exit.
+  - Caught errors don't exit.
+    Adding an exit call to this callback will prevent hanging.

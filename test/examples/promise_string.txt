@@ -1,10 +1,10 @@
-For promised function `request` (call lines 19-29)
-  - No caught exceptions exit.
-    Adding an exit call to `catch` call (lines 25-27) will prevent hanging.
+For call to function `request` (lines 19-29):
   - All successful runs exit.
+  - No caught exceptions exit.
+    Adding an exit call to `catch` call(lines 25-27) will prevent hanging.
 
-For promised function `request` (call lines 31-42)
-  - Some caught exceptions do not exit.
-    Adding an exit call to second parameter of `done` call (lines 40-42) will prevent hanging.
+For call to function `request` (lines 31-42):
   - Some successful runs do not exit.
     Adding an exit call to `done` call (lines 38-40) will prevent hanging.
+  - Some caught exceptions do not exit.
+    Adding an exit call to second parameter of `done` call(lines 40-42) will prevent hanging.

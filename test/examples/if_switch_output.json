@@ -1,100 +1,102 @@
 {
-   "exits": [
-      {
-         "condition": "if i % 3 == 0 is false and i % 3 == 1 is true",
-         "loc": {
-            "start": {
-               "line": 5,
-               "column": 23
-            },
-            "end": {
-               "line": 14,
-               "column": 4
-            }
-         }
-      },
-      {
-         "condition": "if i is 1",
-         "loc": {
-            "start": {
-               "line": 30,
-               "column": 6
-            },
-            "end": {
-               "line": 31,
-               "column": 21
-            }
-         }
-      }
-   ],
-   "non_exits": [
-      {
-         "condition": "if i % 3 == 0 is true",
-         "loc": {
-            "start": {
-               "line": 2,
-               "column": 18
-            },
-            "end": {
-               "line": 4,
-               "column": 4
-            }
-         }
-      },
-      {
-         "condition": "if i % 3 == 0 is false and i % 3 == 1 is false",
-         "loc": {
-            "start": {
-               "line": 15,
-               "column": 7
-            },
-            "end": {
-               "line": 21,
-               "column": 4
-            }
-         }
-      },
-      {
-         "condition": "if i is 0",
-         "loc": {
-            "start": {
-               "line": 28,
-               "column": 6
-            },
-            "end": {
-               "line": 29,
-               "column": 15
-            }
-         }
-      },
-      {
-         "condition": "if i is 2",
-         "loc": {
-            "start": {
-               "line": 32,
-               "column": 6
-            },
-            "end": {
-               "line": 34,
-               "column": 15
-            }
-         }
-      },
-      {
-         "condition": "if i falls through to default",
-         "loc": {
-            "start": {
-               "line": 35,
-               "column": 6
-            },
-            "end": {
-               "line": 36,
-               "column": 15
-            }
-         }
-      }
-   ],
    "global_exits": [],
+   "conditionals": {
+      "exits": [
+         {
+            "condition": "if i % 3 == 0 is false, and if i % 3 == 1 is true",
+            "loc": {
+               "start": {
+                  "line": 5,
+                  "column": 23
+               },
+               "end": {
+                  "line": 14,
+                  "column": 4
+               }
+            }
+         },
+         {
+            "condition": "if i is 1",
+            "loc": {
+               "start": {
+                  "line": 30,
+                  "column": 6
+               },
+               "end": {
+                  "line": 31,
+                  "column": 21
+               }
+            }
+         }
+      ],
+      "non_exits": [
+         {
+            "condition": "if i % 3 == 0 is true",
+            "loc": {
+               "start": {
+                  "line": 2,
+                  "column": 18
+               },
+               "end": {
+                  "line": 4,
+                  "column": 4
+               }
+            }
+         },
+         {
+            "condition": "if i % 3 == 0 is false, and if i % 3 == 1 is false",
+            "loc": {
+               "start": {
+                  "line": 15,
+                  "column": 7
+               },
+               "end": {
+                  "line": 21,
+                  "column": 4
+               }
+            }
+         },
+         {
+            "condition": "if i is 0",
+            "loc": {
+               "start": {
+                  "line": 28,
+                  "column": 6
+               },
+               "end": {
+                  "line": 29,
+                  "column": 15
+               }
+            }
+         },
+         {
+            "condition": "if i is 2",
+            "loc": {
+               "start": {
+                  "line": 32,
+                  "column": 6
+               },
+               "end": {
+                  "line": 34,
+                  "column": 15
+               }
+            }
+         },
+         {
+            "condition": "if i falls through to default",
+            "loc": {
+               "start": {
+                  "line": 35,
+                  "column": 6
+               },
+               "end": {
+                  "line": 36,
+                  "column": 15
+               }
+            }
+         }
+      ]
+   },
    "promises": [],
    "callbacks": []
 }
