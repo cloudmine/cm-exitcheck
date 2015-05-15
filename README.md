@@ -18,7 +18,7 @@ The tool can be used either on the command line or as a standard node module.
 * As a command line utility:
    1. Use either the symlink `exitcheck` or `[path_to_install]/lib/index.js` as your command.
 
-   1. Specify as many files as you want as arguments. Note that only files, not directories, are currently supported. Bad filenames will let you know.
+   1. Specify as many files as you want as arguments. Note that only files, not directories, are currently supported. If you run without arguments, you will get no output.
 
    1. Read the analysis of your exits or lack thereof.
 
