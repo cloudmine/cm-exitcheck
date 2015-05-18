@@ -1,12 +1,14 @@
 'use strict';
 var chai = require('chai');
-var should = chai.should();
+chai.should();
 var expect = chai.expect;
 var sinon = require('sinon');
 var fs = require('fs');
-var fix_dir = './test/fixtures/'
-var ex_dir = './test/examples/'
+var fix_dir = './test/fixtures/';
+var ex_dir = './test/examples/';
 var esprima = require('esprima');
+/* jshint -W030 */
+/* jshint -W117 */
 
 function parse(code_to_parse){
    // so I don't have to specific the esprima params every time
@@ -18,7 +20,7 @@ function parse(code_to_parse){
 
 var utils = require('../lib/utils.js');
 describe('utils.is_exit', function(){
-   var exit_code = "exit();"
+   var exit_code = "exit();";
    var exit_node = parse(exit_code).body[0];
    var not_exit_code = "not_exit()";
    var not_exit_node = parse(not_exit_code).body[0];
@@ -31,21 +33,21 @@ describe('utils.is_exit', function(){
 
    it('should return true for a function that includes an exit call', function(){
       expect(utils.is_exit(not_exit_node, ['not_exit'])).to.be.true;
-   })
+   });
 
    it('should return false for other function calls', function(){
       expect(utils.is_exit(not_exit_node)).to.be.false;
-   })
+   });
 
    it('should return false for non function calls', function(){
       expect(utils.is_exit(not_fcn_node)).to.be.false;
-   })
+   });
 });
 
 describe('utils.has_exit', function(){
    var exit = "function a(){exit();}";
    var exit_node = parse(exit).body[0];
-   var wrapped = "function b() { not_exit() }"
+   var wrapped = "function b() { not_exit() }";
    var wrapped_node = parse(wrapped).body[0];
 
    it('should return a boolean', function(){
@@ -72,13 +74,13 @@ describe('utils.nodes_equal', function(){
 
    var node1 = {
       'range': range1,
-   }
+   };
    var node2 = {
       'range': range2,
-   }
+   };
    var node3 = {
       'range': range3,
-   }
+   };
 
    it('should return true for two nodes with the same range', function(){
       var equivalent = utils.nodes_equal(node1, node1);
@@ -93,7 +95,7 @@ describe('utils.nodes_equal', function(){
    it('should return false for two nodes that begin at different places', function(){
       var equivalent = utils.nodes_equal(node1, node3);
       expect(equivalent).to.be.false;
-   })
+   });
 });
 
 describe('utils.check_functions', function(){
@@ -103,7 +105,7 @@ describe('utils.check_functions', function(){
    it('should return an array', function(){
       utils.check_functions().should.be.an('array');
       utils.check_functions(node).should.be.an('array');
-      utils.check_functions(node, ['something']).should.be.an('array')
+      utils.check_functions(node, ['something']).should.be.an('array');
    });
 
    it('should return those functions that always exit', function(){
@@ -117,15 +119,15 @@ describe('utils.variables_equivalent', function(){
    var node1 = {
       'name': 'node1',
       'type': 'Node'
-   }
+   };
    var node2 = {
       'name': 'node2',
       'type': 'Node'
-   }
+   };
    var node3 = {
       'name': 'node1',
       'type': 'NotANode'
-   }
+   };
 
    it('should return true for two equivalent variable nodes', function(){
       utils.variables_equivalent(node1, node1).should.be.true;
@@ -202,7 +204,7 @@ describe('utils.test_if', function(){
 
       tested.should.have.property('err_caught');
       tested.err_caught.should.be.true;
-   })
+   });
 });
 
 var walker = require('../lib/walker.js');
@@ -295,8 +297,8 @@ describe('callback.test_declaration', function(){
       test.error_param.index.should.equal(1);
       test.error_param.should.have.property('args_passed');
       var args_passed = node.body.body[0].expression.arguments[1].body.body[0].expression.arguments;
-      test.error_param.args_passed.should.deep.equal(args_passed)
-   })
+      test.error_param.args_passed.should.deep.equal(args_passed);
+   });
 });
 
 describe('callback.test', function(){
@@ -310,7 +312,7 @@ describe('callback.test', function(){
 
    it('should correctly populate the result object', function(){
       var node = callback_node.body[3];
-      var callbacks = [callback.test_declaration(callback_node.body[2])]
+      var callbacks = [callback.test_declaration(callback_node.body[2])];
       var tested = callback.test(node, callbacks);
 
       tested.should.have.property('success_found');
@@ -327,7 +329,7 @@ describe('callback.test', function(){
 
       tested.should.have.property('node');
       tested.node.should.deep.equal(node);
-   })
+   });
 });
 
 var promise = require('../lib/promise.js');
@@ -344,14 +346,14 @@ describe('promise.test', function(){
          var result = promise.test(promise_node);
          result.should.have.length(2);
          result[0].should.have.property('all_funcs').with.length(6);
-         result[0].should.have.property('last_caught_index')
+         result[0].should.have.property('last_caught_index');
          result[0].should.have.property('last_caught_exit_index');
          result[0].should.have.property('last_run_index');
          result[0].should.have.property('last_run_exit_index');
          result[0].should.have.property('promise');
 
          result[1].should.have.property('all_funcs').with.length(5);
-         result[1].should.have.property('last_caught_index')
+         result[1].should.have.property('last_caught_index');
          result[1].should.have.property('last_caught_exit_index');
          result[1].should.have.property('last_run_index');
          result[1].should.have.property('last_run_exit_index');
@@ -371,13 +373,13 @@ describe('promise.test', function(){
          result[1].last_run_index.should.equal(4);
 
          result[1].should.have.property('last_run_exit_index');
-         result[1].last_run_exit_index.should.equal(2)
+         result[1].last_run_exit_index.should.equal(2);
       });
 
       it('should indicate whether erroring code exits', function(){
          var result = promise.test(promise_node);
 
-         result[0].should.have.property('last_caught_index')
+         result[0].should.have.property('last_caught_index');
          result[0].last_caught_index.should.equal(4);
 
          result[0].should.have.property('last_caught_exit_index');
@@ -389,7 +391,7 @@ describe('promise.test', function(){
          result[1].should.have.property('last_run_exit_index');
          result[1].last_run_exit_index.should.equal(2);
       });
-   })
+   });
 });
 
 var main = require('../lib/index.js');
@@ -398,7 +400,6 @@ describe('test_string', function(){
    var boring_nodes = parse(boring_code);
 
    var exiting_code = fs.readFileSync(fix_dir + 'fully_exiting_snippet.js', 'utf-8');
-   var exit_block = parse(exiting_code).body[3];
 
    var if_code = fs.readFileSync(ex_dir + 'if_switch_code.js', 'utf-8');
    var callback_code = fs.readFileSync(ex_dir + 'callback_hell.js', 'utf-8');
@@ -441,7 +442,7 @@ describe('test_string', function(){
    it('should check promises', function(){
       sinon.spy(promise, 'test');
 
-      main.test_string(if_code)
+      main.test_string(if_code);
       promise.test.called.should.be.true;
       promise.test.restore();
    });
@@ -474,14 +475,14 @@ describe('test_string', function(){
          'json': false,
       });
       parsed.should.be.a('string');
-      parsed.should.equal('Hooray! Your code contains a global exit.')
+      parsed.should.equal('Hooray! Your code contains a global exit.');
 
       parsed = main.test_string(if_code, {
          'json': false
       });
       parsed.should.be.a('string');
       var if_string = fs.readFileSync(ex_dir + 'if_switch_string.txt', 'utf-8');
-      parsed.should.equal(if_string)
+      parsed.should.equal(if_string);
    });
 
    it('should correctly format conditional output', function(){
@@ -518,7 +519,7 @@ describe('test_file', function(){
 
    it('should provide a useful error if no filename', function(){
       expect(function(){
-         main.test_file()
+         main.test_file();
       }).to.throw('No file name supplied.');
    });
 
