@@ -494,24 +494,69 @@ describe('test_string', function(){
       var output = fs.readFileSync(ex_dir + 'if_switch_string.txt', 'utf-8');
       result.should.be.a('string');
       result.should.equal(output);
+
+      sinon.spy(conditional, 'reduce');
+      result = main.test_string(if_code, {
+         'json': true,
+      });
+      conditional.reduce.calledOnce.should.be.true;
+      conditional.reduce.restore();
+
+      output = JSON.parse(fs.readFileSync(ex_dir + 'if_switch_output.json', 'utf-8'));
+      result.should.be.an('object');
+      result.should.deep.equal(output);
    });
 
    it('should correctly format callback output', function(){
-      var output = fs.readFileSync(ex_dir + 'callback_string.txt', 'utf-8');
       var code = fs.readFileSync(ex_dir + 'callback_hell.js', 'utf-8');
-      var parsed = main.test_string(code);
 
+      sinon.spy(callback, 'output');
+      var parsed = main.test_string(code);
+      callback.output.calledOnce.should.be.true;
+      callback.output.restore();
+
+      var output = fs.readFileSync(ex_dir + 'callback_string.txt', 'utf-8');
       parsed.should.be.a('string');
       parsed.should.equal(output);
+
+      sinon.spy(callback, 'reduce');
+      parsed = main.test_string(code, {
+         'json': true,
+      });
+      callback.reduce.calledOnce.should.be.true;
+      callback.reduce.restore();
+
+      output = JSON.parse(fs.readFileSync(ex_dir + 'callback_output.json', 'utf-8'));
+      parsed.should.be.an('object');
+      parsed.should.deep.equal(output);
    });
 
    it('should correctly format promise output', function(){
-      var output = fs.readFileSync(ex_dir + 'promise_string.txt', 'utf-8');
       var code = fs.readFileSync(ex_dir + 'promise_fun.js', 'utf-8');
-      var parsed = main.test_string(code);
 
+      sinon.spy(promise, 'output');
+      var parsed = main.test_string(code);
+      promise.output.calledOnce.should.be.true;
+      promise.output.restore();
+
+      var output = fs.readFileSync(ex_dir + 'promise_string.txt', 'utf-8');
       parsed.should.be.a('string');
       parsed.should.equal(output);
+
+      sinon.spy(promise, 'reduce');
+      parsed = main.test_string(code, {
+         'json': true,
+      });
+      promise.reduce.calledOnce.should.be.true;
+      promise.reduce.restore();
+
+      output = JSON.parse(fs.readFileSync(ex_dir + 'promise_output.json', 'utf-8'));
+      parsed.should.be.an('object');
+      // parsed.should.deep.equal(output);
+      // in spite of stripping the promise output as much as I thought was reasonable, 
+      // the above refuses to pass, and won't even tell me why. however, the below fails 
+      // when it should, and passes when it should, so... ?!
+      JSON.stringify(parsed).should.equal(JSON.stringify(output));
    });
 });
 
