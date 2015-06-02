@@ -13,7 +13,8 @@
                   "line": 27,
                   "column": 26
                }
-            }
+            },
+            "type": "if"
          }
       ],
       "non_exits": []
@@ -34,6 +35,16 @@
                "line": 39,
                "column": 3
             }
+         },
+         "error_loc": {
+            "start": {
+               "line": 16,
+               "column": 4
+            },
+            "end": {
+               "line": 20,
+               "column": 5
+            }
          }
       },
       {
@@ -50,6 +61,16 @@
                "line": 38,
                "column": 7
             }
+         },
+         "error_loc": {
+            "start": {
+               "line": 22,
+               "column": 8
+            },
+            "end": {
+               "line": 23,
+               "column": 29
+            }
          }
       },
       {
@@ -65,6 +86,16 @@
             "end": {
                "line": 37,
                "column": 11
+            }
+         },
+         "error_loc": {
+            "start": {
+               "line": 26,
+               "column": 12
+            },
+            "end": {
+               "line": 27,
+               "column": 26
             }
          }
       },

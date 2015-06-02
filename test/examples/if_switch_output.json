@@ -3,7 +3,7 @@
    "conditionals": {
       "exits": [
          {
-            "condition": "if i % 3 == 0 is false, and if i % 3 == 1 is true",
+            "condition": "if i % 3 == 0 is false, and i % 3 == 1 is true",
             "loc": {
                "start": {
                   "line": 5,
@@ -13,7 +13,8 @@
                   "line": 14,
                   "column": 4
                }
-            }
+            },
+            "type": "if"
          },
          {
             "condition": "if i is 1",
@@ -26,7 +27,8 @@
                   "line": 31,
                   "column": 21
                }
-            }
+            },
+            "type": "switch"
          }
       ],
       "non_exits": [
@@ -41,10 +43,11 @@
                   "line": 4,
                   "column": 4
                }
-            }
+            },
+            "type": "if"
          },
          {
-            "condition": "if i % 3 == 0 is false, and if i % 3 == 1 is false",
+            "condition": "if i % 3 == 0 is false, and i % 3 == 1 is false",
             "loc": {
                "start": {
                   "line": 15,
@@ -54,7 +57,8 @@
                   "line": 21,
                   "column": 4
                }
-            }
+            },
+            "type": "if"
          },
          {
             "condition": "if i is 0",
@@ -67,7 +71,8 @@
                   "line": 29,
                   "column": 15
                }
-            }
+            },
+            "type": "switch"
          },
          {
             "condition": "if i is 2",
@@ -80,7 +85,8 @@
                   "line": 34,
                   "column": 15
                }
-            }
+            },
+            "type": "switch"
          },
          {
             "condition": "if i falls through to default",
@@ -93,7 +99,8 @@
                   "line": 36,
                   "column": 15
                }
-            }
+            },
+            "type": "switch"
          }
       ]
    },
