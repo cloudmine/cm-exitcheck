@@ -3,7 +3,7 @@
    "conditionals": {
       "exits": [
          {
-            "condition": "if undefined !== err is true",
+            "condition": "if null !== err is true",
             "loc": {
                "start": {
                   "line": 27,

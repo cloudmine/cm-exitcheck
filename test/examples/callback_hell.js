@@ -19,11 +19,11 @@ request('http://google.com', function(err, data1) {
         
     }
     request('http://google.com', function(err, data2) {
-        if (err != undefined)
+        if (err != null)
             return exit(err);
 
         request('http://google.com', function(err, data3) {
-            if (undefined !== err)
+            if (null !== err)
                 exit(err);
 
             request('http://google.com', function(err, data4) {
