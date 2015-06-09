@@ -10,6 +10,7 @@
     "esprima": "^2.1.0"
   },
   "devDependencies": {
+    "blanket-node": "^2.0.0",
     "chai": "^2.2.0",
     "jshint": "^2.7.0",
     "mocha": "^2.2.4",
