@@ -1,119 +1,45 @@
 {
    "global_exits": [],
    "conditionals": {
-      "exits": [
+      "need_exits": [],
+      "always_exits": false,
+      "never_exits": false
+   },
+   "promises": {
+      "need_exits": [],
+      "always_exits": false,
+      "never_exits": true
+   },
+   "callbacks": {
+      "need_exits": [
          {
-            "condition": "if null !== err is true",
+            "error_found": true,
+            "error_exits": false,
+            "success_found": true,
+            "success_exits": true,
             "loc": {
                "start": {
-                  "line": 27,
-                  "column": 16
+                  "line": 15,
+                  "column": 0
                },
                "end": {
-                  "line": 27,
-                  "column": 26
+                  "line": 39,
+                  "column": 3
                }
             },
-            "type": "if"
+            "error_loc": {
+               "start": {
+                  "line": 16,
+                  "column": 4
+               },
+               "end": {
+                  "line": 20,
+                  "column": 5
+               }
+            }
          }
       ],
-      "non_exits": []
-   },
-   "promises": [],
-   "callbacks": [
-      {
-         "error_found": true,
-         "error_exits": false,
-         "success_found": true,
-         "success_exits": true,
-         "loc": {
-            "start": {
-               "line": 15,
-               "column": 0
-            },
-            "end": {
-               "line": 39,
-               "column": 3
-            }
-         },
-         "error_loc": {
-            "start": {
-               "line": 16,
-               "column": 4
-            },
-            "end": {
-               "line": 20,
-               "column": 5
-            }
-         }
-      },
-      {
-         "error_found": true,
-         "error_exits": true,
-         "success_found": true,
-         "success_exits": true,
-         "loc": {
-            "start": {
-               "line": 21,
-               "column": 4
-            },
-            "end": {
-               "line": 38,
-               "column": 7
-            }
-         },
-         "error_loc": {
-            "start": {
-               "line": 22,
-               "column": 8
-            },
-            "end": {
-               "line": 23,
-               "column": 29
-            }
-         }
-      },
-      {
-         "error_found": true,
-         "error_exits": true,
-         "success_found": true,
-         "success_exits": true,
-         "loc": {
-            "start": {
-               "line": 25,
-               "column": 8
-            },
-            "end": {
-               "line": 37,
-               "column": 11
-            }
-         },
-         "error_loc": {
-            "start": {
-               "line": 26,
-               "column": 12
-            },
-            "end": {
-               "line": 27,
-               "column": 26
-            }
-         }
-      },
-      {
-         "error_found": true,
-         "error_exits": true,
-         "success_found": true,
-         "success_exits": true,
-         "loc": {
-            "start": {
-               "line": 29,
-               "column": 12
-            },
-            "end": {
-               "line": 36,
-               "column": 15
-            }
-         }
-      }
-   ]
+      "always_exits": false,
+      "never_exits": false
+   }
 }

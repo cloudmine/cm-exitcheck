@@ -1,37 +1,7 @@
 {
    "global_exits": [],
    "conditionals": {
-      "exits": [
-         {
-            "condition": "if i % 3 == 0 is false, and i % 3 == 1 is true",
-            "loc": {
-               "start": {
-                  "line": 5,
-                  "column": 23
-               },
-               "end": {
-                  "line": 14,
-                  "column": 4
-               }
-            },
-            "type": "if"
-         },
-         {
-            "condition": "if i is 1",
-            "loc": {
-               "start": {
-                  "line": 30,
-                  "column": 6
-               },
-               "end": {
-                  "line": 31,
-                  "column": 21
-               }
-            },
-            "type": "switch"
-         }
-      ],
-      "non_exits": [
+      "need_exits": [
          {
             "condition": "if i % 3 == 0 is true",
             "loc": {
@@ -102,8 +72,18 @@
             },
             "type": "switch"
          }
-      ]
+      ],
+      "always_exits": false,
+      "never_exits": false
    },
-   "promises": [],
-   "callbacks": []
+   "promises": {
+      "need_exits": [],
+      "always_exits": false,
+      "never_exits": true
+   },
+   "callbacks": {
+      "need_exits": [],
+      "always_exits": false,
+      "never_exits": true
+   }
 }

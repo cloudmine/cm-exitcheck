@@ -1,339 +1,348 @@
 {
    "global_exits": [],
    "conditionals": {
-      "exits": [],
-      "non_exits": []
+      "need_exits": [],
+      "always_exits": false,
+      "never_exits": true
    },
-   "promises": [
-      {
-         "call": {
-            "name": "request",
-            "loc": {
-               "start": {
-                  "line": 19,
-                  "column": 0
-               },
-               "end": {
-                  "line": 29,
-                  "column": 3
-               }
-            }
-         },
-         "run_exits": true,
-         "last_run_exits": true,
-         "last_run": {
-            "property": {
-               "range": [
-                  720,
-                  727
-               ],
+   "promises": {
+      "need_exits": [
+         {
+            "call": {
+               "name": "request",
                "loc": {
                   "start": {
-                     "line": 27,
-                     "column": 3
+                     "line": 19,
+                     "column": 0
                   },
                   "end": {
-                     "line": 27,
-                     "column": 10
+                     "line": 29,
+                     "column": 3
                   }
-               },
-               "type": "Identifier",
-               "name": "finally"
+               }
             },
-            "arguments": [
-               {
+            "run_exits": true,
+            "last_run_exits": true,
+            "last_run": {
+               "property": {
                   "range": [
-                     728,
-                     754
+                     720,
+                     727
                   ],
                   "loc": {
                      "start": {
                         "line": 27,
-                        "column": 11
+                        "column": 3
                      },
                      "end": {
-                        "line": 29,
-                        "column": 1
+                        "line": 27,
+                        "column": 10
                      }
                   },
-                  "params": []
-               }
-            ],
-            "type": "finally"
-         },
-         "has_catch": true,
-         "catch_exits": false,
-         "last_caught_exits": false,
-         "last_catch": {
-            "property": {
-               "range": [
-                  678,
-                  683
-               ],
-               "loc": {
-                  "start": {
-                     "line": 25,
-                     "column": 3
-                  },
-                  "end": {
-                     "line": 25,
-                     "column": 8
-                  }
+                  "type": "Identifier",
+                  "name": "finally"
                },
-               "type": "Identifier",
-               "name": "catch"
+               "arguments": [
+                  {
+                     "range": [
+                        728,
+                        754
+                     ],
+                     "loc": {
+                        "start": {
+                           "line": 27,
+                           "column": 11
+                        },
+                        "end": {
+                           "line": 29,
+                           "column": 1
+                        }
+                     },
+                     "params": []
+                  }
+               ],
+               "type": "finally"
             },
-            "arguments": [
-               {
+            "has_catch": true,
+            "catch_exits": false,
+            "last_caught_exits": false,
+            "last_catch": {
+               "property": {
                   "range": [
-                     684,
-                     718
+                     678,
+                     683
                   ],
                   "loc": {
                      "start": {
                         "line": 25,
-                        "column": 9
+                        "column": 3
                      },
                      "end": {
-                        "line": 27,
-                        "column": 1
+                        "line": 25,
+                        "column": 8
                      }
                   },
-                  "params": [
-                     {
-                        "range": [
-                           693,
-                           696
-                        ],
-                        "loc": {
-                           "start": {
-                              "line": 25,
-                              "column": 18
-                           },
-                           "end": {
-                              "line": 25,
-                              "column": 21
-                           }
-                        },
-                        "type": "Identifier",
-                        "name": "err"
-                     }
-                  ]
-               }
-            ],
-            "type": "catch"
-         }
-      },
-      {
-         "call": {
-            "name": "request",
-            "loc": {
-               "start": {
-                  "line": 31,
-                  "column": 0
+                  "type": "Identifier",
+                  "name": "catch"
                },
-               "end": {
-                  "line": 42,
-                  "column": 2
-               }
+               "arguments": [
+                  {
+                     "range": [
+                        684,
+                        718
+                     ],
+                     "loc": {
+                        "start": {
+                           "line": 25,
+                           "column": 9
+                        },
+                        "end": {
+                           "line": 27,
+                           "column": 1
+                        }
+                     },
+                     "params": [
+                        {
+                           "range": [
+                              693,
+                              696
+                           ],
+                           "loc": {
+                              "start": {
+                                 "line": 25,
+                                 "column": 18
+                              },
+                              "end": {
+                                 "line": 25,
+                                 "column": 21
+                              }
+                           },
+                           "type": "Identifier",
+                           "name": "err"
+                        }
+                     ]
+                  }
+               ],
+               "type": "catch"
             }
          },
-         "run_exits": true,
-         "last_run_exits": false,
-         "last_run": {
-            "property": {
-               "range": [
-                  998,
-                  1002
-               ],
+         {
+            "call": {
+               "name": "request",
                "loc": {
                   "start": {
-                     "line": 38,
-                     "column": 3
+                     "line": 31,
+                     "column": 0
                   },
                   "end": {
-                     "line": 38,
-                     "column": 7
+                     "line": 42,
+                     "column": 2
                   }
-               },
-               "type": "Identifier",
-               "name": "done"
+               }
             },
-            "arguments": [
-               {
+            "run_exits": true,
+            "last_run_exits": false,
+            "last_run": {
+               "property": {
                   "range": [
-                     1003,
-                     1031
+                     998,
+                     1002
                   ],
                   "loc": {
                      "start": {
                         "line": 38,
-                        "column": 8
-                     },
-                     "end": {
-                        "line": 40,
-                        "column": 1
-                     }
-                  },
-                  "params": [
-                     {
-                        "range": [
-                           1012,
-                           1016
-                        ],
-                        "loc": {
-                           "start": {
-                              "line": 38,
-                              "column": 17
-                           },
-                           "end": {
-                              "line": 38,
-                              "column": 21
-                           }
-                        },
-                        "type": "Identifier",
-                        "name": "data"
-                     }
-                  ]
-               },
-               {
-                  "range": [
-                     1033,
-                     1073
-                  ],
-                  "loc": {
-                     "start": {
-                        "line": 40,
                         "column": 3
                      },
                      "end": {
-                        "line": 42,
-                        "column": 1
+                        "line": 38,
+                        "column": 7
                      }
                   },
-                  "params": [
-                     {
-                        "range": [
-                           1042,
-                           1045
-                        ],
-                        "loc": {
-                           "start": {
-                              "line": 40,
-                              "column": 12
-                           },
-                           "end": {
-                              "line": 40,
-                              "column": 15
-                           }
-                        },
-                        "type": "Identifier",
-                        "name": "err"
-                     }
-                  ]
-               }
-            ],
-            "type": "done"
-         },
-         "has_catch": true,
-         "catch_exits": true,
-         "last_caught_exits": false,
-         "last_catch": {
-            "property": {
-               "range": [
-                  998,
-                  1002
-               ],
-               "loc": {
-                  "start": {
-                     "line": 38,
-                     "column": 3
-                  },
-                  "end": {
-                     "line": 38,
-                     "column": 7
-                  }
+                  "type": "Identifier",
+                  "name": "done"
                },
-               "type": "Identifier",
-               "name": "done"
+               "arguments": [
+                  {
+                     "range": [
+                        1003,
+                        1031
+                     ],
+                     "loc": {
+                        "start": {
+                           "line": 38,
+                           "column": 8
+                        },
+                        "end": {
+                           "line": 40,
+                           "column": 1
+                        }
+                     },
+                     "params": [
+                        {
+                           "range": [
+                              1012,
+                              1016
+                           ],
+                           "loc": {
+                              "start": {
+                                 "line": 38,
+                                 "column": 17
+                              },
+                              "end": {
+                                 "line": 38,
+                                 "column": 21
+                              }
+                           },
+                           "type": "Identifier",
+                           "name": "data"
+                        }
+                     ]
+                  },
+                  {
+                     "range": [
+                        1033,
+                        1073
+                     ],
+                     "loc": {
+                        "start": {
+                           "line": 40,
+                           "column": 3
+                        },
+                        "end": {
+                           "line": 42,
+                           "column": 1
+                        }
+                     },
+                     "params": [
+                        {
+                           "range": [
+                              1042,
+                              1045
+                           ],
+                           "loc": {
+                              "start": {
+                                 "line": 40,
+                                 "column": 12
+                              },
+                              "end": {
+                                 "line": 40,
+                                 "column": 15
+                              }
+                           },
+                           "type": "Identifier",
+                           "name": "err"
+                        }
+                     ]
+                  }
+               ],
+               "type": "done"
             },
-            "arguments": [
-               {
+            "has_catch": true,
+            "catch_exits": true,
+            "last_caught_exits": false,
+            "last_catch": {
+               "property": {
                   "range": [
-                     1003,
-                     1031
+                     998,
+                     1002
                   ],
                   "loc": {
                      "start": {
                         "line": 38,
-                        "column": 8
-                     },
-                     "end": {
-                        "line": 40,
-                        "column": 1
-                     }
-                  },
-                  "params": [
-                     {
-                        "range": [
-                           1012,
-                           1016
-                        ],
-                        "loc": {
-                           "start": {
-                              "line": 38,
-                              "column": 17
-                           },
-                           "end": {
-                              "line": 38,
-                              "column": 21
-                           }
-                        },
-                        "type": "Identifier",
-                        "name": "data"
-                     }
-                  ]
-               },
-               {
-                  "range": [
-                     1033,
-                     1073
-                  ],
-                  "loc": {
-                     "start": {
-                        "line": 40,
                         "column": 3
                      },
                      "end": {
-                        "line": 42,
-                        "column": 1
+                        "line": 38,
+                        "column": 7
                      }
                   },
-                  "params": [
-                     {
-                        "range": [
-                           1042,
-                           1045
-                        ],
-                        "loc": {
-                           "start": {
-                              "line": 40,
-                              "column": 12
-                           },
-                           "end": {
-                              "line": 40,
-                              "column": 15
-                           }
+                  "type": "Identifier",
+                  "name": "done"
+               },
+               "arguments": [
+                  {
+                     "range": [
+                        1003,
+                        1031
+                     ],
+                     "loc": {
+                        "start": {
+                           "line": 38,
+                           "column": 8
                         },
-                        "type": "Identifier",
-                        "name": "err"
-                     }
-                  ]
-               }
-            ],
-            "type": "done"
+                        "end": {
+                           "line": 40,
+                           "column": 1
+                        }
+                     },
+                     "params": [
+                        {
+                           "range": [
+                              1012,
+                              1016
+                           ],
+                           "loc": {
+                              "start": {
+                                 "line": 38,
+                                 "column": 17
+                              },
+                              "end": {
+                                 "line": 38,
+                                 "column": 21
+                              }
+                           },
+                           "type": "Identifier",
+                           "name": "data"
+                        }
+                     ]
+                  },
+                  {
+                     "range": [
+                        1033,
+                        1073
+                     ],
+                     "loc": {
+                        "start": {
+                           "line": 40,
+                           "column": 3
+                        },
+                        "end": {
+                           "line": 42,
+                           "column": 1
+                        }
+                     },
+                     "params": [
+                        {
+                           "range": [
+                              1042,
+                              1045
+                           ],
+                           "loc": {
+                              "start": {
+                                 "line": 40,
+                                 "column": 12
+                              },
+                              "end": {
+                                 "line": 40,
+                                 "column": 15
+                              }
+                           },
+                           "type": "Identifier",
+                           "name": "err"
+                        }
+                     ]
+                  }
+               ],
+               "type": "done"
+            }
          }
-      }
-   ],
-   "callbacks": []
+      ],
+      "always_exits": false,
+      "never_exits": false
+   },
+   "callbacks": {
+      "need_exits": [],
+      "always_exits": false,
+      "never_exits": true
+   }
 }

@@ -9,6 +9,7 @@ var ex_dir = './test/examples/';
 var esprima = require('esprima');
 /* jshint -W030 */
 /* jshint -W117 */
+// (above to ignore silly errors if linter looks at this file)
 
 function parse(code_to_parse){
    // so I don't have to specific the esprima params every time
@@ -569,7 +570,6 @@ describe('test_file', function(){
    });
 
    it('should respect the json option', function(){
-      var json_output = JSON.parse(fs.readFileSync(ex_dir + 'if_switch_output.json', 'utf-8'));
       var parsed = main.test_file(fix_dir + 'wrapped_function.js', {
          'json': false
       });
@@ -586,6 +586,8 @@ describe('test_file', function(){
       parsed.should.have.property('conditionals');
       parsed.should.have.property('callbacks');
       parsed.should.have.property('promises');
+
+      var json_output = JSON.parse(fs.readFileSync(ex_dir + 'if_switch_output.json', 'utf-8'));
       parsed.should.deep.equal(json_output);
    });
 });
