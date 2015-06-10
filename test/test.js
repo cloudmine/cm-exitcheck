@@ -554,10 +554,12 @@ describe('test_string', function(){
       output = JSON.parse(fs.readFileSync(ex_dir + 'promise_output.json', 'utf-8'));
       parsed.should.be.an('object');
       // parsed.should.deep.equal(output);
-      // in spite of stripping the promise output as much as I thought was reasonable, 
-      // the above refuses to pass, and won't even tell me why. however, the below fails 
-      // when it should, and passes when it should, so... ?!
+      // in spite of reducing the promise output as much as I thought was reasonable, 
+      // the above refuses to pass, and won't even tell me why. however, the below
+      // fails when it should, and passes when it should, so... ?!
       JSON.stringify(parsed).should.equal(JSON.stringify(output));
+      // if the above fails, use the should.deep.equal to figure out why, the 
+      // string comparison is HELL to debug even if you stringify nicely
    });
 });
 

@@ -1,6 +1,10 @@
 'use strict';
 var exit = console.log;
 
+function wrapped_exit(args){
+    exit(args);
+}
+
 var rest = require('restler');
 var Q = require('q');
 
@@ -21,7 +25,7 @@ request('http://google.com').then(function(data) {
 }).then(function(data1, data2) {
     [data1, data2, request('http://google.com')]
 }).spread(function(data1, data2, data3) {
-    exit([data1, data2, data3]);
+    wrapped_exit([data1, data2, data3]);
 }).catch(function(err) {
     // exit(err)
 }).finally(function() {
@@ -34,7 +38,7 @@ request('http://google.com').then(function(data) {
     exit(data1, data2);
     [data1, data2, request('http://google.com')]
 }).catch(function(err) {
-    exit(err)
+    wrapped_exit(err)
 }).done(function(data){
     [data]
 }, function(err){
