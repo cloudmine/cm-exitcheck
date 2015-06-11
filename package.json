@@ -1,0 +1,49 @@
+{
+  "name": "cm-exitcheck",
+  "version": "1.0.0",
+  "description": "A utility for checking a specific version of the halting problem in Node.js code.",
+  "main": "lib/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "esprima": "^2.1.0"
+  },
+  "devDependencies": {
+    "blanket-node": "^2.0.0",
+    "chai": "^2.2.0",
+    "jshint": "^2.7.0",
+    "mocha": "^2.2.4",
+    "sinon": "^1.14.1",
+    "travis-cov": "^0.2.5"
+  },
+  "bin": {
+    "exitcheck": "lib/index.js"
+  },
+  "preferGlobal": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cloudmine/cm-exitcheck.git"
+  },
+  "author": "CloudMine",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/cloudmine/cm-exitcheck/issues"
+  },
+  "homepage": "https://github.com/cloudmine/cm-exitcheck",
+  "config": {
+    "blanket": {
+      "debug": true,
+      "pattern": "lib",
+      "shortnames": true,
+      "data-cover-flags": "debug",
+      "data-cover-reporter-options": {
+        "shortnames": true
+      },
+      "data-cover-never": "node_modules"
+    },
+    "travis-cov": {
+      "threshold": 90
+    }
+  }
+}
