@@ -13,27 +13,27 @@
    "callbacks": {
       "need_exits": [
          {
-            "error_found": true,
-            "error_exits": false,
             "success_found": true,
             "success_exits": true,
+            "error_found": true,
+            "error_exits": false,
             "loc": {
                "start": {
-                  "line": 15,
+                  "line": 19,
                   "column": 0
                },
                "end": {
-                  "line": 39,
+                  "line": 43,
                   "column": 3
                }
             },
             "error_loc": {
                "start": {
-                  "line": 16,
+                  "line": 20,
                   "column": 4
                },
                "end": {
-                  "line": 20,
+                  "line": 24,
                   "column": 5
                }
             }

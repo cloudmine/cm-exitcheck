@@ -272,7 +272,7 @@ describe('callback.test_declaration', function(){
    });
 
    it('should populate the correct properties for callback functions', function(){
-      var node = callback_node.body[2];
+      var node = callback_node.body[3];
       var test = callback.test_declaration(node);
 
       test.should.have.property('success_found');
@@ -312,8 +312,8 @@ describe('callback.test', function(){
    });
 
    it('should correctly populate the result object', function(){
-      var node = callback_node.body[3];
-      var callbacks = [callback.test_declaration(callback_node.body[2])];
+      var node = callback_node.body[4];
+      var callbacks = [callback.test_declaration(callback_node.body[3])];
       var tested = callback.test(node, callbacks);
 
       tested.should.have.property('success_found');
@@ -426,8 +426,9 @@ describe('test_string', function(){
    it('should check all function declarations for callbacks', function(){
       sinon.spy(callback, 'test_declaration');
       main.test_string(callback_code);
-      callback.test_declaration.callCount.should.equal(1);
-      callback.test_declaration.calledWith(parse(callback_code).body[2]).should.be.true;
+      callback.test_declaration.calledTwice.should.be.true;
+      callback.test_declaration.calledWith(parse(callback_code).body[1]).should.be.true;
+      callback.test_declaration.calledWith(parse(callback_code).body[3]).should.be.true;
       callback.test_declaration.restore();
    });
 
@@ -453,7 +454,7 @@ describe('test_string', function(){
       sinon.spy(callback, 'test_declaration');
 
       main.test_string(callback_code);
-      callback.test_declaration.calledOnce.should.be.true;
+      callback.test_declaration.calledTwice.should.be.true;
       callback.test.called.should.be.true;
 
       callback.test.restore();

@@ -1,3 +1,7 @@
+function wrapped_exit(args){
+   exit(args);
+}
+
 for (var i = 0; i < 3; i++) {
    if (i % 3 == 0){
       console.log("stage 2");
@@ -10,7 +14,7 @@ for (var i = 0; i < 3; i++) {
       else {
          exit();
       }
-      exit();
+      wrapped_exit();
    }
    else{
       /* 
@@ -30,7 +34,7 @@ for (var i = 0; i < 5; i++) {
       case 1:
          exit(param);
       case 2:
-         this.something();
+         wrapped_exit();
          break;
       default:
          break;

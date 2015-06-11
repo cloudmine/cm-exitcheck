@@ -1,5 +1,9 @@
 'use strict';
 
+function wrapped_exit(args){
+    exit(args);
+}
+
 var rest = require('restler');
 
 function request(url, cb) {
