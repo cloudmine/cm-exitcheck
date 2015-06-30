@@ -50,3 +50,7 @@ Within the JSON output, there is some consitency among formatting. Apart from `g
 * `never_exits` a boolean of whether the code never exits.
 
 The last two properties were included to help quickly identify outputs that be ignored. For example, if any of them have the `always_exit` set to true, then it doesn't matter to us what else is going on -- the code will always exit. Similarly, if all of them have `never_exit` set to true, then the logical thing to do is simply put an `exit()` call at the end of the code. These checks are done as the first step of string output, so you don't have to worry about sorting through too much irrelevant output.
+
+
+# Author
+Originally written by [Lucy Moss](mailto:thecoloryes@gmail.com). Development sponsored by [CloudMine](https://cloudmine.me).
