@@ -1,6 +1,6 @@
 {
   "name": "cm-exitcheck",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A utility for checking a specific version of the halting problem in Node.js code.",
   "main": "lib/index.js",
   "directories": {
