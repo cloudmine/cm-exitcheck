@@ -3,60 +3,20 @@
   "conditionals": {
     "need_exits": [
       {
-        "condition": "if i % 3 == 0 is true",
-        "loc": {
-          "start": {
-            "line": 6,
-            "column": 17
-          },
-          "end": {
-            "line": 8,
-            "column": 3
-          }
-        },
-        "type": "if"
+        "line": 6,
+        "message": "Code doesn't exit if i % 3 == 0 is true"
       },
       {
-        "condition": "if i % 3 == 0 is false, and i % 3 == 1 is false",
-        "loc": {
-          "start": {
-            "line": 19,
-            "column": 6
-          },
-          "end": {
-            "line": 25,
-            "column": 3
-          }
-        },
-        "type": "if"
+        "line": 19,
+        "message": "Code doesn't exit if i % 3 == 0 is false, and i % 3 == 1 is false"
       },
       {
-        "condition": "if i is 0",
-        "loc": {
-          "start": {
-            "line": 32,
-            "column": 4
-          },
-          "end": {
-            "line": 33,
-            "column": 12
-          }
-        },
-        "type": "switch"
+        "line": 32,
+        "message": "Code doesn't exit if i is 0"
       },
       {
-        "condition": "if i falls through to default",
-        "loc": {
-          "start": {
-            "line": 39,
-            "column": 4
-          },
-          "end": {
-            "line": 40,
-            "column": 12
-          }
-        },
-        "type": "switch"
+        "line": 39,
+        "message": "Code doesn't exit if i falls through to default"
       }
     ],
     "always_exits": false,

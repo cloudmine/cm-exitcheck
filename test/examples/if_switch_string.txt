@@ -1,10 +1,4 @@
-Your code does not contain an exit under the following conditions:
-
-  - if i % 3 == 0 is true
-    lines 6-8
-  - if i % 3 == 0 is false, and i % 3 == 1 is false
-    lines 19-25
-  - if i is 0
-    lines 32-33
-  - if i falls through to default
-    lines 39-40
+Line 6: Code doesn't exit if i % 3 == 0 is true
+Line 19: Code doesn't exit if i % 3 == 0 is false, and i % 3 == 1 is false
+Line 32: Code doesn't exit if i is 0
+Line 39: Code doesn't exit if i falls through to default

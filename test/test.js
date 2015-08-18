@@ -488,14 +488,10 @@ describe('test_string', function(){
   });
 
   it('should correctly format conditional output', function(){
-    sinon.spy(conditional, 'output');
     var result = main.test_string(if_code);
-    conditional.output.calledOnce.should.be.true;
-    conditional.output.restore();
-
-    var output = fs.readFileSync(ex_dir + 'if_switch_string.txt', 'utf-8');
+    var expected = fs.readFileSync(ex_dir + 'if_switch_string.txt', 'utf-8');
     result.should.be.a('string');
-    result.should.equal(output);
+    result.should.equal(expected);
 
     sinon.spy(conditional, 'reduce');
     result = main.test_string(if_code, {
@@ -504,9 +500,9 @@ describe('test_string', function(){
     conditional.reduce.calledOnce.should.be.true;
     conditional.reduce.restore();
 
-    output = JSON.parse(fs.readFileSync(ex_dir + 'if_switch_output.json', 'utf-8'));
+    expected = JSON.parse(fs.readFileSync(ex_dir + 'if_switch_output.json', 'utf-8'));
     result.should.be.an('object');
-    result.should.deep.equal(output);
+    result.should.deep.equal(expected);
   });
 
   it('should correctly format callback output', function(){
