@@ -1,4 +1,1 @@
-For callback beginning on line 19:
-  - Successful runs exit.
-  - Caught errors don't exit.
-    Adding an exit call to this callback will prevent hanging.
+Line 20: Code doesn't exit in this error handling, but it does if there's no error.

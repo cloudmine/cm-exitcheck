@@ -507,26 +507,21 @@ describe('test_string', function(){
 
   it('should correctly format callback output', function(){
     var code = fs.readFileSync(ex_dir + 'callback_hell.js', 'utf-8');
-
-    sinon.spy(callback, 'output');
-    var parsed = main.test_string(code);
-    callback.output.calledOnce.should.be.true;
-    callback.output.restore();
-
-    var output = fs.readFileSync(ex_dir + 'callback_string.txt', 'utf-8');
-    parsed.should.be.a('string');
-    parsed.should.equal(output);
+    var result = main.test_string(code);
+    var expected = fs.readFileSync(ex_dir + 'callback_string.txt', 'utf-8');
+    result.should.be.a('string');
+    result.should.equal(expected);
 
     sinon.spy(callback, 'reduce');
-    parsed = main.test_string(code, {
+    result = main.test_string(code, {
       'json': true,
     });
     callback.reduce.calledOnce.should.be.true;
     callback.reduce.restore();
 
-    output = JSON.parse(fs.readFileSync(ex_dir + 'callback_output.json', 'utf-8'));
-    parsed.should.be.an('object');
-    parsed.should.deep.equal(output);
+    expected = JSON.parse(fs.readFileSync(ex_dir + 'callback_output.json', 'utf-8'));
+    result.should.be.an('object');
+    result.should.deep.equal(expected);
   });
 
   it('should correctly format promise output', function(){

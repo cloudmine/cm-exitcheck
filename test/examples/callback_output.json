@@ -13,30 +13,8 @@
   "callbacks": {
     "need_exits": [
       {
-        "success_found": true,
-        "success_exits": true,
-        "error_found": true,
-        "error_exits": false,
-        "loc": {
-          "start": {
-            "line": 19,
-            "column": 0
-          },
-          "end": {
-            "line": 43,
-            "column": 3
-          }
-        },
-        "error_loc": {
-          "start": {
-            "line": 20,
-            "column": 3
-          },
-          "end": {
-            "line": 24,
-            "column": 4
-          }
-        }
+        "line": 20,
+        "message": "Code doesn't exit in this error handling, but it does if there's no error."
       }
     ],
     "always_exits": false,

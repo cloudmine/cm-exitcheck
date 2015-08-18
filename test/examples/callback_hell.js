@@ -18,7 +18,7 @@ function request(url, cb) {
 // Change any URL to a non-existant one to get the `err` to fire.
 request('http://google.com', function(err, data1) {
    if (err) {
-      // return exit(err);
+//      return wrapped_exit(err);
    } else {
       
    }
@@ -27,8 +27,9 @@ request('http://google.com', function(err, data1) {
         return exit(err);
 
       request('http://google.com', function(err, data3) {
-        if (null !== err)
-           exit(err);
+        if (null !== err){
+           wrapped_exit(err); 
+        }
 
         request('http://google.com', function(err, data4) {
            exit([
