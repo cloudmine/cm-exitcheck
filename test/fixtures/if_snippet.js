@@ -1,5 +1,5 @@
 if (a){
-   exit();
+  exit();
 } else{
-   console.log("sorry");
+  console.log("sorry");
 }

@@ -1,9 +1,9 @@
 function my_function(){
-   exit();
+  exit();
 }
 
 if (true){
-   my_function();
+  my_function();
 } else{
-   exit();
+  exit();
 }
