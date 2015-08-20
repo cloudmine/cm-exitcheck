@@ -1,10 +1,3 @@
-For call to function `request` (lines 23-33):
-  - All successful runs exit.
-  - No caught exceptions exit.
-    Adding an exit call to `catch` call (lines 29-31) will prevent hanging.
-
-For call to function `request` (lines 35-46):
-  - Some successful runs do not exit.
-    Adding an exit call to `done` call (lines 42-44) will prevent hanging.
-  - Some caught exceptions do not exit.
-    Adding an exit call to second parameter of `done` call (lines 44-46) will prevent hanging.
+Line 29: Code doesn't exit in this error handling, but it does if there are no errors (near line 31)
+Line 42: Code doesn't exit in this `done` call, instead it exits in `then` call near line 37
+Line 44: Code doesn't exit in this error handling, but it does in error handling near line 40
