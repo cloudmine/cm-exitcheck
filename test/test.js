@@ -466,7 +466,7 @@ describe('test_string', function(){
       'json': true,
     });
     parsed.should.be.an('object');
-    parsed.should.have.property('global_exits');
+    parsed.should.have.property('global_exit');
     parsed.should.have.property('conditionals');
     parsed.should.have.property('promises');
     parsed.should.have.property('callbacks');
@@ -565,7 +565,7 @@ describe('test_file', function(){
     });
 
     parsed.should.be.an('object');
-    parsed.should.have.property('global_exits');
+    parsed.should.have.property('global_exit');
     parsed.should.have.property('conditionals');
     parsed.should.have.property('callbacks');
     parsed.should.have.property('promises');

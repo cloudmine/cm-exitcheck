@@ -1,5 +1,5 @@
 {
-  "global_exits": [],
+  "global_exit": false,
   "conditionals": {
     "need_exits": [
       {
