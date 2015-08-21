@@ -487,6 +487,45 @@ describe('test_string', function(){
     parsed.should.equal(if_string);
   });
 
+  it('should respect the zero_index option', function(){
+    var result = main.test_string(if_code, {
+      'json': true,
+      'zero_index': true,
+    });
+    var one_index = JSON.parse(fs.readFileSync(ex_dir + 'if_switch_output.json', 'utf8'));
+
+    var one_conditionals = one_index.conditionals.need_exits;
+    var zero_conditionals = result.conditionals.need_exits;
+    for (var i = 0; i < zero_conditionals.length; i++){
+      zero_conditionals[i].line.should.equal(one_conditionals[i].line - 1);
+    }
+
+    result = main.test_string(callback_code, {
+      'json': true,
+      'zero_index': true,
+    })
+    one_index = JSON.parse(fs.readFileSync(ex_dir + 'callback_output.json', 'utf8'));
+
+    var one_callbacks = one_index.conditionals.need_exits;
+    var zero_callbacks = result.conditionals.need_exits;
+    for (i = 0; i < zero_callbacks.length; i++){
+      zero_callbacks[i].line.should.equal(one_callbacks[i].line - 1);
+    }
+    
+    var promise_code = fs.readFileSync(ex_dir + 'promise_fun.js', 'utf8');
+    result = main.test_string(promise_code, {
+      'json': true,
+      'zero_index': true,
+    });
+    one_index = JSON.parse(fs.readFileSync(ex_dir + 'promise_output.json', 'utf8'));
+
+    var one_promises = one_index.promises.need_exits;
+    var zero_promises = result.promises.need_exits;
+    for (i = 0; i < zero_promises.length; i++){
+      zero_promises[i].line.should.equal(one_promises[i].line - 1);
+    }
+  });
+
   it('should correctly format conditional output', function(){
     var result = main.test_string(if_code);
     var expected = fs.readFileSync(ex_dir + 'if_switch_string.txt', 'utf-8');
