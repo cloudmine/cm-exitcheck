@@ -1,16 +1,12 @@
 # exitcheck
-A utility for solving a specific version of the halting problem in Node.js code. By default only looks for calls to `exit()` (with or without parameters), *not* `process.exit()`. 
+A utility for solving a specific version of the halting problem in Node.js code. Currently only detects calls to `exit` (*not* `process.exit`) and any function which directly calls `exit`. Checks conditionals (`if` and `switch` statements), callbacks (with callback declared in code), and promises (that use the `q` library).
 
 # Installation
 ```
 npm install cm-exitcheck -g
 ```
 
-Or, if you don't need the command line executable, 
-
-```
-npm install cm-exitcheck
-```
+If you don't need the command line executable, you can install without `-g` and ignore the warning that global install is preferred.
 
 # Usage
 The tool can be used either on the command line or as a standard node module.
@@ -27,30 +23,63 @@ The tool can be used either on the command line or as a standard node module.
 
    1. Use `cm-exitcheck.test_file` to test when you know a filename, and `cm-exitcheck.test_string` to test when you have the code in a string.
 
-   1. Optionally, set your options in the second param. (Read more in **Output**.)
+   1. Optionally, set your options in the second param. 
+
+# Options
+Currently, you can only specify options when using the library as a module. Simply specify a second parameter to either `test_file` or `test_string`. The following options are supported:
+
+* `json`: boolean, whether to return JSON
+* `zero_index`: boolean, whether you want line numbers starting with 0 instead of 1
 
 # Output
-You can get output in one of two forms: a string, which is hopefully understandable to us humans, and some JSON, which is useful if you're using this as a sort of linter and want the line numbers as, well, numbers so you can embed messages into the editor.
+There are two types of output, string output and JSON output. Currently, the command line utility only supports string output, as it is the default.
 
-Specifying the output type is currently only supported when using the module methods. To specify whether you want JSON output, include a second parameter in your call to `test_string` or `test_file`. This parameter should be an object with a `json` property, or it will be ignored. The property itself can be any truthy or falsey value.
+## String Output
+This output is simply a string with each error on a different line, or a message that there were no errors. The line numbers shown are one-indexed not zero-indexed. This output form is generally suggested for human consumption.
 
-**String Output:** Default output, and the only output for command line. Explains problems if they exist, also tells you if you are in the clear.
+Output (when not "Hooray! Your code contains a global exit.") will look like `Line #: <Error message>` for each error found.
 
-**JSON Output:** Returns an object with 5 arrays of nodes, with location information (and possibly more). The properties are as follows:
+## JSON Output
+This output is more complicated but also more detailed. It is generally only suggested when there is a need to consume line numbers as numbers, for example embedding this analysis in a code editor. The object is consutructed as follows:
 
-* `global_exits` an array of program-level calls to `exit` or a function that always calls `exit`
-* `conditionals` an analysis of the conditionals (`if` & `switch`) which need exits
-* `promises` an analysis of the promise-returning function calls which need exits
-* `callbacks` an analysis of callbacks functions which need exits
+```
+{
+  global_exit: <boolean>, 
+  conditionals: {
+    need_exits: [{
+      line: <number>, 
+      message: <string> 
+    }, ...],
+    always_exits: <boolean>, 
+    never_exits: <boolean> 
+  },
+  callbacks: {
+    need_exits: [{
+      line: <number>,
+      message: <string>
+    }, ...],
+    always_exits: <boolean>,
+    never_exits: <boolean>
+  },
+  promises: {
+    need_exits: [{
+      line: <number>,
+      message: string>
+    }, ...],
+    always_exits: <boolean>,
+    never_exits: <boolean>
+  }
+}
+```
 
-Within the JSON output, there is some consitency among formatting. Apart from `global_exits`, which is just an array of objects with `range` and `loc` properties, the other three properties above look like this:
+Note that the `need_exits` arrays can be empty; if they're empty, nothing was determined to be wrong for that topic.
 
-* `need_exits` an array of objects used to identify where exits are not, but should be. These are formatted uniquely to each type at the moment.
-* `always_exits` a boolean of whether the code, well, always exits.
-* `never_exits` a boolean of whether the code never exits.
+The `global_exit` boolean indicates whether there was a program-level exit call. 
 
-The last two properties were included to help quickly identify outputs that be ignored. For example, if any of them have the `always_exit` set to true, then it doesn't matter to us what else is going on -- the code will always exit. Similarly, if all of them have `never_exit` set to true, then the logical thing to do is simply put an `exit()` call at the end of the code. These checks are done as the first step of string output, so you don't have to worry about sorting through too much irrelevant output.
+For `always_exits` and `never_exits` properties, each indicate whether the grouping well, does what the property says. Note that if `always_exits` is true for any property, all other exit messages should be ignored, as they are no longer relevant. Similarly, if `never_exits` is true for all properties and `global_exit` is false, there will be nothing in the `need_exits` properties, but there is still an error. String formatted output returns "Your code never exits. Adding an \`exit\` call to the end of your code will prevent the process from hanging." in this case. In an editor, you may want to attach such a message to the last line of the code.
 
+# Testing
+Simply `make test` to run unit tests and linting with jshint. Note that the linter only spits out errors (no output from it is a good thing). Code coverage can be generated and opened in your browser with `make cov`.
 
 # Author
 Originally written by [Lucy Moss](mailto:thecoloryes@gmail.com). Development sponsored by [CloudMine](https://cloudmine.me).
