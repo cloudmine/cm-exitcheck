@@ -7,9 +7,6 @@ var fs = require('fs');
 var fix_dir = './test/fixtures/';
 var ex_dir = './test/examples/';
 var esprima = require('esprima');
-/* jshint -W030 */
-/* jshint -W117 */
-// (above to ignore silly errors if linter looks at this file)
 
 function parse(code_to_parse){
   // so I don't have to specific the esprima params every time
@@ -18,6 +15,20 @@ function parse(code_to_parse){
     'loc': true,
   });
 }
+
+// I'm redoing the same variables a lot, and they're read from files
+// Seems reasonable to declare them globally
+var conditional_code = fs.readFileSync(ex_dir + 'conditional_code.js', 'utf8');
+var callback_code = fs.readFileSync(ex_dir + 'callback_code.js', 'utf8');
+var promise_code = fs.readFileSync(ex_dir + 'promise_code.js', 'utf8');
+
+var conditional_string = fs.readFileSync(ex_dir + 'conditional_string.txt', 'utf8');
+var callback_string = fs.readFileSync(ex_dir + 'callback_string.txt', 'utf8');
+var promise_string = fs.readFileSync(ex_dir + 'promise_string.txt', 'utf8');
+
+var conditional_json = JSON.parse(fs.readFileSync(ex_dir + 'conditional_json.json', 'utf8'));
+var callback_json = JSON.parse(fs.readFileSync(ex_dir + 'callback_json.json', 'utf8'));
+var promise_json = JSON.parse(fs.readFileSync(ex_dir + 'promise_json.json', 'utf8'));
 
 var utils = require('../lib/utils.js');
 describe('utils.is_exit', function(){
@@ -100,7 +111,7 @@ describe('utils.nodes_equal', function(){
 });
 
 describe('utils.check_functions', function(){
-  var code = fs.readFileSync(fix_dir + 'wrapped_function.js', 'utf-8');
+  var code = fs.readFileSync(fix_dir + 'wrapped_function.js', 'utf8');
   var node = parse(code);
 
   it('should return an array', function(){
@@ -176,7 +187,7 @@ describe('utils.get_all_functions', function(){
 });
 
 describe('utils.test_if', function(){
-  var if_code = fs.readFileSync(fix_dir + 'if_snippet.js', 'utf-8');
+  var if_code = fs.readFileSync(fix_dir + 'if_snippet.js', 'utf8');
   var if_node = parse(if_code);
 
   it('should ignore unrelated ifs', function(){
@@ -184,13 +195,13 @@ describe('utils.test_if', function(){
       'type': 'Identifier',
       'name': 'err',
     };
-    var tested = utils.test_if(if_node.body[0], fake_err, []);
+    var result = utils.test_if(if_node.body[0], fake_err, []);
 
-    tested.should.have.property('err_exits');
-    tested.err_exits.should.be.false;
+    result.should.have.property('err_exits');
+    result.err_exits.should.be.false;
 
-    tested.should.have.property('err_caught');
-    tested.err_caught.should.be.false;
+    result.should.have.property('err_caught');
+    result.err_caught.should.be.false;
   });
 
   it('should recognize err handling', function(){
@@ -198,19 +209,19 @@ describe('utils.test_if', function(){
       'type': 'Identifier',
       'name': 'a',
     };
-    var tested = utils.test_if(if_node.body[0], matching_err, []);
+    var result = utils.test_if(if_node.body[0], matching_err, []);
 
-    tested.should.have.property('err_exits');
-    tested.err_exits.should.be.true;
+    result.should.have.property('err_exits');
+    result.err_exits.should.be.true;
 
-    tested.should.have.property('err_caught');
-    tested.err_caught.should.be.true;
+    result.should.have.property('err_caught');
+    result.err_caught.should.be.true;
   });
 });
 
 var walker = require('../lib/walker.js');
 describe('walker.walk', function(){
-  var boring_code = fs.readFileSync(fix_dir + 'boring.js', 'utf-8');
+  var boring_code = fs.readFileSync(fix_dir + 'boring.js', 'utf8');
   var boring_node = parse(boring_code);
   var syntax = walker.syntax();
 
@@ -232,13 +243,13 @@ describe('walker.walk', function(){
 
 var conditional = require('../lib/conditional.js');
 describe('conditional.test', function(){
-  var if_code = fs.readFileSync(fix_dir + 'if_snippet.js', 'utf-8');
-  var if_node = parse(if_code).body[0];
-  var switch_code = fs.readFileSync(fix_dir + 'switch_snippet.js', 'utf-8');
+  var conditional_code = fs.readFileSync(fix_dir + 'if_snippet.js', 'utf8');
+  var if_node = parse(conditional_code).body[0];
+  var switch_code = fs.readFileSync(fix_dir + 'switch_snippet.js', 'utf8');
   var switch_node = parse(switch_code).body[0];
 
   it('should put all exiting children in the `exits` property', function(){
-    var result = conditional.test(if_node, [], if_code);
+    var result = conditional.test(if_node, [], conditional_code);
     result.should.have.property('exits').with.length(1);
     result.exits.should.deep.include(if_node.consequent);
 
@@ -248,7 +259,7 @@ describe('conditional.test', function(){
   });
 
   it('should put all not-exiting children in the `non_exits` property', function(){
-    var result = conditional.test(if_node, [], if_code);
+    var result = conditional.test(if_node, [], conditional_code);
     result.should.have.property('non_exits').with.length(1);
     result.non_exits.should.deep.include(if_node.alternate);
 
@@ -261,11 +272,10 @@ describe('conditional.test', function(){
 
 var callback = require('../lib/callback.js');
 describe('callback.test_declaration', function(){
-  var callback_code = fs.readFileSync(ex_dir + 'callback_hell.js', 'utf-8');
   var callback_node = parse(callback_code);
 
   it('should return nothing for functions that don\'t use callbacks', function(){
-    var code = fs.readFileSync(fix_dir + 'wrapped_function.js', 'utf-8');
+    var code = fs.readFileSync(fix_dir + 'wrapped_function.js', 'utf8');
     var node = parse(code).body[0];
     var test = callback.test_declaration(node);
     expect(test).to.be.undefined;
@@ -303,39 +313,37 @@ describe('callback.test_declaration', function(){
 });
 
 describe('callback.test', function(){
-  var callback_code = fs.readFileSync(ex_dir + 'callback_hell.js', 'utf-8');
   var callback_node = parse(callback_code);
 
   it('should only return something if given an expression statement', function(){
-    var tested = callback.test(callback_node, []);
-    expect(tested).to.be.undefined;
+    var result = callback.test(callback_node, []);
+    expect(result).to.be.undefined;
   });
 
   it('should correctly populate the result object', function(){
     var node = callback_node.body[4];
     var callbacks = [callback.test_declaration(callback_node.body[3])];
-    var tested = callback.test(node, callbacks);
+    var result = callback.test(node, callbacks);
 
-    tested.should.have.property('success_found');
-    tested.success_found.should.be.true;
+    result.should.have.property('success_found');
+    result.success_found.should.be.true;
 
-    tested.should.have.property('success_exits');
-    tested.success_exits.should.be.true;
+    result.should.have.property('success_exits');
+    result.success_exits.should.be.true;
 
-    tested.should.have.property('error_found');
-    tested.error_found.should.be.true;
+    result.should.have.property('error_found');
+    result.error_found.should.be.true;
 
-    tested.should.have.property('error_exits');
-    tested.error_exits.should.be.false;
+    result.should.have.property('error_exits');
+    result.error_exits.should.be.false;
 
-    tested.should.have.property('node');
-    tested.node.should.deep.equal(node);
+    result.should.have.property('node');
+    result.node.should.deep.equal(node);
   });
 });
 
 var promise = require('../lib/promise.js');
 describe('promise.test', function(){
-  var promise_code = fs.readFileSync(ex_dir + 'promise_fun.js', 'utf-8');
   var promise_node = parse(promise_code);
 
   it('should return an array given a good esprima node', function(){
@@ -397,13 +405,10 @@ describe('promise.test', function(){
 
 var main = require('../lib/index.js');
 describe('test_string', function(){
-  var boring_code = fs.readFileSync(fix_dir + 'boring.js', 'utf-8');
+  var boring_code = fs.readFileSync(fix_dir + 'boring.js', 'utf8');
   var boring_nodes = parse(boring_code);
 
-  var exiting_code = fs.readFileSync(fix_dir + 'fully_exiting_snippet.js', 'utf-8');
-
-  var if_code = fs.readFileSync(ex_dir + 'if_switch_code.js', 'utf-8');
-  var callback_code = fs.readFileSync(ex_dir + 'callback_hell.js', 'utf-8');
+  var exiting_code = fs.readFileSync(fix_dir + 'fully_exiting_snippet.js', 'utf8');
 
   it('should parse the string using esprima', function(){
     sinon.spy(esprima, 'parse');
@@ -435,7 +440,7 @@ describe('test_string', function(){
   it('should check conditionals', function(){
     sinon.spy(conditional, 'test');
 
-    main.test_string(if_code);
+    main.test_string(conditional_code);
     conditional.test.called.should.be.true;
 
     conditional.test.restore();
@@ -444,7 +449,7 @@ describe('test_string', function(){
   it('should check promises', function(){
     sinon.spy(promise, 'test');
 
-    main.test_string(if_code);
+    main.test_string(conditional_code);
     promise.test.called.should.be.true;
     promise.test.restore();
   });
@@ -462,124 +467,117 @@ describe('test_string', function(){
   });
 
   it('should respect the json option', function(){
-    var parsed = main.test_string(if_code, {
+    var result = main.test_string(conditional_code, {
       'json': true,
     });
-    parsed.should.be.an('object');
-    parsed.should.have.property('global_exit');
-    parsed.should.have.property('conditionals');
-    parsed.should.have.property('promises');
-    parsed.should.have.property('callbacks');
-    var if_json = JSON.parse(fs.readFileSync(ex_dir + 'if_switch_output.json', 'utf-8'));
-    parsed.should.deep.equal(if_json);
+    result.should.be.an('object');
+    result.should.have.property('global_exit');
+    result.should.have.property('conditionals');
+    result.should.have.property('promises');
+    result.should.have.property('callbacks');
+    result.should.deep.equal(conditional_json);
 
-    parsed = main.test_string(exiting_code, {
+    result = main.test_string(exiting_code, {
       'json': false,
     });
-    parsed.should.be.a('string');
-    parsed.should.equal('Hooray! Your code contains a global exit.');
+    result.should.be.a('string');
+    result.should.equal('Hooray! Your code contains a global exit.');
 
-    parsed = main.test_string(if_code, {
+    result = main.test_string(conditional_code, {
       'json': false
     });
-    parsed.should.be.a('string');
-    var if_string = fs.readFileSync(ex_dir + 'if_switch_string.txt', 'utf-8');
-    parsed.should.equal(if_string);
+    result.should.be.a('string');
+    result.should.equal(conditional_string);
   });
 
   it('should respect the zero_index option', function(){
-    var result = main.test_string(if_code, {
+    var result = main.test_string(conditional_code, {
       'json': true,
       'zero_index': true,
     });
-    var one_index = JSON.parse(fs.readFileSync(ex_dir + 'if_switch_output.json', 'utf8'));
 
-    var one_conditionals = one_index.conditionals.need_exits;
-    var zero_conditionals = result.conditionals.need_exits;
-    for (var i = 0; i < zero_conditionals.length; i++){
-      zero_conditionals[i].line.should.equal(one_conditionals[i].line - 1);
+    var one_index = conditional_json.conditionals.need_exits;
+    var zero_index = result.conditionals.need_exits;
+
+    for (var i = 0; i < zero_index.length; i++){
+      zero_index[i].line.should.equal(one_index[i].line - 1);
     }
 
     result = main.test_string(callback_code, {
       'json': true,
       'zero_index': true,
     })
-    one_index = JSON.parse(fs.readFileSync(ex_dir + 'callback_output.json', 'utf8'));
+    one_index = callback_json.callbacks.need_exits;
+    zero_index = result.callbacks.need_exits;
 
-    var one_callbacks = one_index.conditionals.need_exits;
-    var zero_callbacks = result.conditionals.need_exits;
-    for (i = 0; i < zero_callbacks.length; i++){
-      zero_callbacks[i].line.should.equal(one_callbacks[i].line - 1);
+    for (i = 0; i < zero_index.length; i++){
+      zero_index[i].line.should.equal(one_index[i].line - 1);
     }
     
-    var promise_code = fs.readFileSync(ex_dir + 'promise_fun.js', 'utf8');
     result = main.test_string(promise_code, {
       'json': true,
       'zero_index': true,
     });
-    one_index = JSON.parse(fs.readFileSync(ex_dir + 'promise_output.json', 'utf8'));
+    one_index = promise_json.promises.need_exits;
+    zero_index = result.promises.need_exits;
 
-    var one_promises = one_index.promises.need_exits;
-    var zero_promises = result.promises.need_exits;
-    for (i = 0; i < zero_promises.length; i++){
-      zero_promises[i].line.should.equal(one_promises[i].line - 1);
+    for (i = 0; i < zero_index.length; i++){
+      zero_index[i].line.should.equal(one_index[i].line - 1);
     }
+
+    result = main.test_string(conditional_code, {
+      'json': true,
+      'zero_index': false,
+    });
+    result.should.deep.equal(conditional_json);
   });
 
   it('should correctly format conditional output', function(){
-    var result = main.test_string(if_code);
-    var expected = fs.readFileSync(ex_dir + 'if_switch_string.txt', 'utf-8');
+    var result = main.test_string(conditional_code);
     result.should.be.a('string');
-    result.should.equal(expected);
+    result.should.equal(conditional_string);
 
     sinon.spy(conditional, 'reduce');
-    result = main.test_string(if_code, {
+    result = main.test_string(conditional_code, {
       'json': true,
     });
     conditional.reduce.calledOnce.should.be.true;
     conditional.reduce.restore();
 
-    expected = JSON.parse(fs.readFileSync(ex_dir + 'if_switch_output.json', 'utf-8'));
     result.should.be.an('object');
-    result.should.deep.equal(expected);
+    result.should.deep.equal(conditional_json);
   });
 
   it('should correctly format callback output', function(){
-    var code = fs.readFileSync(ex_dir + 'callback_hell.js', 'utf-8');
-    var result = main.test_string(code);
-    var expected = fs.readFileSync(ex_dir + 'callback_string.txt', 'utf-8');
+    var result = main.test_string(callback_code);
     result.should.be.a('string');
-    result.should.equal(expected);
+    result.should.equal(callback_string);
 
     sinon.spy(callback, 'reduce');
-    result = main.test_string(code, {
+    result = main.test_string(callback_code, {
       'json': true,
     });
     callback.reduce.calledOnce.should.be.true;
     callback.reduce.restore();
 
-    expected = JSON.parse(fs.readFileSync(ex_dir + 'callback_output.json', 'utf-8'));
     result.should.be.an('object');
-    result.should.deep.equal(expected);
+    result.should.deep.equal(callback_json);
   });
 
   it('should correctly format promise output', function(){
-    var code = fs.readFileSync(ex_dir + 'promise_fun.js', 'utf-8');
-    var result = main.test_string(code);
-    var expected = fs.readFileSync(ex_dir + 'promise_string.txt', 'utf-8');
+    var result = main.test_string(promise_code);
     result.should.be.a('string');
-    result.should.equal(expected);
+    result.should.equal(promise_string);
 
     sinon.spy(promise, 'reduce');
-    result = main.test_string(code, {
+    result = main.test_string(promise_code, {
       'json': true,
     });
     promise.reduce.calledOnce.should.be.true;
     promise.reduce.restore();
 
-    expected = JSON.parse(fs.readFileSync(ex_dir + 'promise_output.json', 'utf-8'));
     result.should.be.an('object');
-    result.should.deep.equal(expected);
+    result.should.deep.equal(promise_json);
   });
 });
 
@@ -592,25 +590,46 @@ describe('test_file', function(){
   });
 
   it('should respect the json option', function(){
-    var parsed = main.test_file(fix_dir + 'wrapped_function.js', {
+    var result = main.test_file(fix_dir + 'wrapped_function.js', {
       'json': false
     });
 
-    parsed.should.be.a('string');
-    parsed.should.equal('Hooray! Your code will always exit.');
+    result.should.be.a('string');
+    result.should.equal('Hooray! Your code will always exit.');
 
-    parsed = main.test_file(ex_dir + 'if_switch_code.js', {
+    result = main.test_file(ex_dir + 'conditional_code.js', {
       'json': true
     });
 
-    parsed.should.be.an('object');
-    parsed.should.have.property('global_exit');
-    parsed.should.have.property('conditionals');
-    parsed.should.have.property('callbacks');
-    parsed.should.have.property('promises');
+    result.should.be.an('object');
+    result.should.have.property('global_exit');
+    result.should.have.property('conditionals');
+    result.should.have.property('callbacks');
+    result.should.have.property('promises');
 
-    var json_output = JSON.parse(fs.readFileSync(ex_dir + 'if_switch_output.json', 'utf-8'));
-    parsed.should.deep.equal(json_output);
+    result.should.deep.equal(conditional_json);
+  });
+
+  it('should respect the zero_index option', function(){
+    var result = main.test_file(ex_dir + 'callback_code.js', {
+      'zero_index': false,
+    });
+
+    result.should.deep.equal(callback_string);
+
+    // it's just much easier to check zero_index with JSON
+    result = main.test_file(ex_dir + 'promise_code.js', {
+      'json': true,
+      'zero_index': true,
+    });
+
+    var one_index = promise_json.promises.need_exits;
+    var zero_index = result.promises.need_exits;
+
+    for (var i = 0; i < zero_index.length; i++){
+      zero_index[i].line.should.equal(one_index[i].line - 1);
+    }
+
   });
 });
 
